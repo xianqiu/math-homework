@@ -70,7 +70,7 @@ class MathL2(object):
 
 class MathL3(object):
     """
-    L2：加减法 a+b 或 a-b（结果非负）
+    L3：加减法 a+b 或 a-b（结果非负）
     """
     def __init__(self, lb=0, ub=20):
         self._m1 = MathL1(lb, ub)
@@ -84,7 +84,7 @@ class MathL3(object):
 
 class MathL4(object):
     """
-    L2：连加法 a+b+c
+    L4：连加法 a+b+c
     """
 
     def __init__(self, lb=0, ub=30):
@@ -99,7 +99,7 @@ class MathL4(object):
 
 class MathL5(object):
     """
-    L2：连减法 a-b-c（结果非负）
+    L5：连减法 a-b-c（结果非负）
     """
 
     def __init__(self, lb, ub):
@@ -120,7 +120,7 @@ class MathL5(object):
 
 class MathL6(object):
     """
-    L2：连加 a+b+c 或 连减 a-b-c（结果非负）
+    L6：连加 a+b+c 或 连减 a-b-c（结果非负）
     """
 
     def __init__(self, lb=0, ub=30):
@@ -135,7 +135,7 @@ class MathL6(object):
 
 class MathL7(object):
     """
-    L2：连加减法 a+b-c 或 a-b+c 或 a+b+c（结果非负）
+    L7：连加减法 a+b-c 或 a-b+c 或 a+b+c（结果非负）
     """
 
     def __init__(self, lb=0, ub=40):
