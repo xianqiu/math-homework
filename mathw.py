@@ -14,10 +14,7 @@ class MathWork(object):
     }
 
     def __init__(self, level, **kwargs):
-        assert isinstance(level, int) and 1 <= level <= 12, \
-            'LEVEL must be in 1, 2, ..., 12.'
         self._lv = level
-
         for k, v in self._config.items():
             if k in kwargs:
                 self._config[k] = kwargs[k]
