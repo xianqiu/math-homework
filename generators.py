@@ -4,7 +4,7 @@ __all__ = ['MathL1', 'MathL2', 'MathL3', 'MathL4',
            'MathL13', 'MathL14', 'MathL15', 'MathL16',
            'MathL17', 'MathL18', 'MathL19', 'MathL20',
            'MathL21', 'MathL22', 'MathL23', 'MathL24',
-           'MathL25', 'MathL26', 'MathL27'
+           'MathL25', 'MathL26', 'MathL27', 'MathL28'
            ]
 
 import numpy as np
@@ -49,7 +49,7 @@ def _gen_add_arr(lb, ub, k, num):
 
 class MathL1(object):
     """
-    L1：加法 a+b
+    加法 a+b
     """
     def __init__(self, ub=20):
         self._ub = ub
@@ -62,7 +62,7 @@ class MathL1(object):
 
 class MathL2(object):
     """
-    L2：减法（结果为非负）a-b
+    减法（结果为非负）a-b
     """
     def __init__(self, ub=20):
         self._ub = ub
@@ -78,7 +78,7 @@ class MathL2(object):
 
 class MathL3(object):
     """
-    L3：加减法 a+b 或 a-b（结果非负）
+    加减法 a+b 或 a-b（结果非负）
     """
     def __init__(self, ub=20):
         self._m1 = MathL1(ub)
@@ -92,7 +92,7 @@ class MathL3(object):
 
 class MathL4(object):
     """
-    L4：连加法 a+b+c
+    连加法 a+b+c
     """
 
     def __init__(self, ub=30):
@@ -106,7 +106,7 @@ class MathL4(object):
 
 class MathL5(object):
     """
-    L5：连减法 a-b-c（结果非负）
+    连减法 a-b-c（结果非负）
     """
 
     def __init__(self, ub):
@@ -126,7 +126,7 @@ class MathL5(object):
 
 class MathL6(object):
     """
-    L6：连加 a+b+c 或 连减 a-b-c（结果非负）
+    连加 a+b+c 或 连减 a-b-c（结果非负）
     """
 
     def __init__(self, ub=30):
@@ -141,7 +141,7 @@ class MathL6(object):
 
 class MathL7(object):
     """
-    L7：连加减法 a+b-c 或 a-b+c 或 a+b+c（结果非负）
+    连加减法 a+b-c 或 a-b+c 或 a+b+c（结果非负）
     """
 
     def __init__(self, ub=40):
@@ -162,20 +162,52 @@ class MathL7(object):
 
 class MathL8(object):
     """
-    L8: 减法 a - b
+    负数相加 - a - b
     """
+
     def __init__(self, ub=30):
         self._ub = ub
 
     def generate(self, num):
-        arr = _gen_add_arr(0, self._ub, 2, num)
+        arr1 = _gen_add_arr(-self._ub // 2, 0, 1, num)
+        arr2 = _gen_add_arr(0, self._ub // 2, 1, num)
+        arr = map(lambda a: [a[0][0], a[1][0]], zip(arr1, arr2))
         ops = [['-', '=']] * num
-        return _to_result(arr, ops)
+        return _to_result(arr, ops, skip={0})
 
 
 class MathL9(object):
     """
-    L9: 加法、减法：-a-b, -a+b, a-b
+    减法 a-b, -a+b
+    """
+    def __init__(self, ub=30):
+        self._ub = ub
+
+    def _generate1(self, num):
+        # a-b
+        arr = _gen_add_arr(0, self._ub, 2, num)
+        ops = [['-', '=']] * num
+        return _to_result(arr, ops)
+
+    def _generate2(self, num):
+        # -a+b
+        arr1 = _gen_add_arr(-self._ub, 0, 1, num)
+        arr2 = _gen_add_arr(0, self._ub, 1, num)
+        arr = map(lambda a: [a[0][0], a[1][0]], zip(arr1, arr2))
+        ops = [['+', '=']] * num
+        return _to_result(arr, ops, skip={0})
+
+    def generate(self, num):
+        res1 = self._generate1(num)
+        res2 = self._generate2(num)
+        res = res1 + res2
+        indices = np.random.randint(0, len(res), num)
+        return [res[i] for i in indices]
+
+
+class MathL10(object):
+    """
+    加法、减法：-a-b, -a+b, a-b
     """
     def __init__(self, ub=30):
         self._ub = ub
@@ -196,18 +228,24 @@ class MathL9(object):
         ops = [['+', '=']] * num
         return _to_result(arr, ops, skip={0})
 
+    def _generate3(self, num):
+        # a-b
+        arr = _gen_add_arr(0, self._ub, 2, num)
+        ops = [['-', '=']] * num
+        return _to_result(arr, ops)
+
     def generate(self, num):
         res1 = self._generate1(num)
         res2 = self._generate2(num)
-        res3 = MathL8(self._ub).generate(num)
+        res3 = self._generate3(num)
         res = res1 + res2 + res3
         indices = np.random.randint(0, len(res), num)
         return [res[i] for i in indices]
 
 
-class MathL10(object):
+class MathL11(object):
     """
-    L10: 连加法 a-b-c, -a-b-c
+    连加法 a-b-c, -a-b-c
     """
     def __init__(self, ub=30):
         self._ub = ub
@@ -233,9 +271,9 @@ class MathL10(object):
         return [res[i] for i in indices]
 
 
-class MathL11(object):
+class MathL12(object):
     """
-    L11: 连加减法 a+b-c 或 a-b+c
+    连加减法 a+b-c 或 a-b+c
     """
     def __init__(self, ub=30):
         self._ub = ub
@@ -249,9 +287,9 @@ class MathL11(object):
         return _to_result(arr, ops)
 
 
-class MathL12(object):
+class MathL13(object):
     """
-    L12: 连加减法 -a+b-c 或 -a-b+c
+    连加减法 -a+b-c 或 -a-b+c
     """
     def __init__(self, ub=30):
         self._ub = ub
@@ -267,9 +305,9 @@ class MathL12(object):
         return _to_result(arr, ops, skip={0})
 
 
-class MathL13(object):
+class MathL14(object):
     """
-    L13: 负负得正 a+(-b) 或 a-(-b)
+    负负得正 a+(-b) 或 a-(-b)
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -285,9 +323,9 @@ class MathL13(object):
         return _to_result(arr, ops)
 
 
-class MathL14(object):
+class MathL15(object):
     """
-    L14: 负负得正 -a+(-b) 或 -a-(-b)
+    负负得正 -a+(-b) 或 -a-(-b)
     """
 
     def __init__(self, ub=40):
@@ -302,9 +340,9 @@ class MathL14(object):
         return _to_result(arr, ops, skip={0})
 
 
-class MathL15(object):
+class MathL16(object):
     """
-    L15: a+b+c, abc可以带负号
+    a+b+c, abc可以带负号
     """
 
     def __init__(self, ub=40):
@@ -316,9 +354,9 @@ class MathL15(object):
         return _to_result(arr, ops, skip={0})
 
 
-class MathL16(object):
+class MathL17(object):
     """
-    L16: 加法填空 a+?=b
+    加法填空 a+?=b
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -329,9 +367,9 @@ class MathL16(object):
         return _to_result(arr, ops)
 
 
-class MathL17(object):
+class MathL18(object):
     """
-    L17: 减法填空 a-?=b
+    减法填空 a-?=b
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -342,9 +380,9 @@ class MathL17(object):
         return _to_result(arr, ops)
 
 
-class MathL18(object):
+class MathL19(object):
     """
-    L18: 加减法填空 a+?=b 或 a-?=b
+    加减法填空 a+?=b 或 a-?=b
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -361,9 +399,9 @@ class MathL18(object):
         return _to_result(arr, ops)
 
 
-class MathL19(object):
+class MathL20(object):
     """
-    L19: 加后填空 a+b+?=c 或 a+b-?=c
+    加后填空 a+b+?=c 或 a+b-?=c
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -377,9 +415,9 @@ class MathL19(object):
         return _to_result(arr, ops)
 
 
-class MathL20(object):
+class MathL21(object):
     """
-    L20: 加法填空、减法填空 -a + ? = b 或 -a - ? = b
+    加法填空、减法填空 -a + ? = b 或 -a - ? = b
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -395,9 +433,9 @@ class MathL20(object):
         return _to_result(arr, ops, skip={0})
 
 
-class MathL21(object):
+class MathL22(object):
     """
-    L21: 加减法填空 a-b+?=c 或 a-b-?=c
+    加减法填空 a-b+?=c 或 a-b-?=c
     """
 
     def __init__(self, ub=40):
@@ -412,9 +450,9 @@ class MathL21(object):
         return _to_result(arr, ops)
 
 
-class MathL22(object):
+class MathL23(object):
     """
-    L22: 加减法填空 -a-b+?=c 或 -a-b-?=c
+    加减法填空 -a-b+?=c 或 -a-b-?=c
     """
 
     def __init__(self, ub=40):
@@ -430,9 +468,9 @@ class MathL22(object):
         return _to_result(arr, ops, skip={0})
 
 
-class MathL23(object):
+class MathL24(object):
     """
-    L23：加减法填空 -a+b+?=c 或 -a+b-?=c
+    加减法填空 -a+b+?=c 或 -a+b-?=c
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -447,9 +485,9 @@ class MathL23(object):
         return _to_result(arr, ops, skip={0})
 
 
-class MathL24(object):
+class MathL25(object):
     """
-    L24：加减法填空 -a+b+?=-c 或 -a-b+?=-c
+    加减法填空 -a+b+?=-c 或 -a-b+?=-c
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -467,9 +505,9 @@ class MathL24(object):
         return _to_result(arr, ops, skip={0, 2})
 
 
-class MathL25(object):
+class MathL26(object):
     """
-    L25：中间填空 a+?+b=c 或 a-?-b=c
+    中间填空 a+?+b=c 或 a-?-b=c
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -485,9 +523,9 @@ class MathL25(object):
         return _to_result(arr, ops)
 
 
-class MathL26(object):
+class MathL27(object):
     """
-    L26：中间填空 -a+?+b=-c 或 -a-?-b=c
+    中间填空 -a+?+b=-c 或 -a-?-b=c
     """
     def __init__(self, ub=40):
         self._ub = ub
@@ -505,9 +543,9 @@ class MathL26(object):
         return _to_result(arr, ops, skip={0, 2})
 
 
-class MathL27(object):
+class MathL28(object):
     """
-    L27：a+b+?=c 或 ?+a+b=c 或 a+?+b=c, abc可以带负号
+    a+b+?=c 或 ?+a+b=c 或 a+?+b=c, abc可以带负号
     """
     def __init__(self, ub=40):
         self._ub = ub
