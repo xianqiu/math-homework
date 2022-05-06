@@ -1,6 +1,6 @@
 import datetime
 
-from generators import *
+from series import *
 from formatter import Formatter
 
 
@@ -13,7 +13,8 @@ class MathWork(object):
         'showHeaderInfo': True,
     }
 
-    def __init__(self, level, **kwargs):
+    def __init__(self, series, level, **kwargs):
+        self._se = series
         self._lv = level
         for k, v in self._config.items():
             if k in kwargs:
@@ -28,7 +29,7 @@ class MathWork(object):
         return info
 
     def go(self):
-        mathLL = globals()['MathL%d' % self._lv]
+        mathLL = globals()['{}L{}'.format(self._se, self._lv)]
         items = mathLL().generate(self.pageNum * self.pageCapacity)
         self._config['headerInfo'] = self.gen_header_info()
         Formatter(items, **self._config).save()

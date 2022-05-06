@@ -1,37 +1,15 @@
-__all__ = ['MathL1', 'MathL2', 'MathL3', 'MathL4',
-           'MathL5', 'MathL6', 'MathL7', 'MathL8',
-           'MathL9',  'MathL10', 'MathL11', 'MathL12',
-           'MathL13', 'MathL14', 'MathL15', 'MathL16',
-           'MathL17', 'MathL18', 'MathL19', 'MathL20',
-           'MathL21', 'MathL22', 'MathL23', 'MathL24',
-           'MathL25', 'MathL26', 'MathL27', 'MathL28'
-           ]
+__all__ = [
+    'AddL1', 'AddL2', 'AddL3', 'AddL4', 'AddL5',
+    'AddL6', 'AddL7', 'AddL8', 'AddL9', 'AddL10',
+    'AddL11', 'AddL12', 'AddL13', 'AddL14', 'AddL15',
+    'AddL16', 'AddL17', 'AddL18', 'AddL19', 'AddL20',
+    'AddL21', 'AddL22', 'AddL23', 'AddL24', 'AddL25',
+    'AddL26', 'AddL27', 'AddL28'
+]
 
 import numpy as np
 
-
-def _to_result(arr, ops, wrap=True, skip=None):
-    """
-    把公式格式化成字符串
-    :param arr: 二维数组，每一行代表公式的数字，例如 [a, b]
-    :param ops: 二维数组，每一行代表公式的操作，例如 [+, =]
-    :param wrap: 自动加括号，例如 a + (-b)
-    :return: str list，例如 ['a1 + b1 = ', 'a2 + b2 = ']
-    """
-    if skip is None:
-        skip = {}
-    res = []
-    for row, op in zip(arr, ops):
-        comb = []
-        for i in range(len(row)):
-            if wrap and row[i] < 0 and i not in skip:
-                comb.append('(' + str(int(row[i])) + ')')
-            else:
-                comb.append(str(int(row[i])))
-            if i < len(op):
-                comb.append(op[i])
-        res.append(' '.join(comb))
-    return res
+from .utils import to_result
 
 
 def _gen_add_arr(lb, ub, k, num):
@@ -47,7 +25,7 @@ def _gen_add_arr(lb, ub, k, num):
     return arr
 
 
-class MathL1(object):
+class AddL1(object):
     """
     加法 a+b
     """
@@ -57,10 +35,10 @@ class MathL1(object):
     def generate(self, num):
         arr = _gen_add_arr(0, self._ub, 2, num)
         ops = [['+', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL2(object):
+class AddL2(object):
     """
     减法（结果为非负）a-b
     """
@@ -73,16 +51,16 @@ class MathL2(object):
             if arr[i][0] < arr[i][1]:
                 arr[i] = [arr[i][1], arr[i][0]]
         ops = [['-', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL3(object):
+class AddL3(object):
     """
     加减法 a+b 或 a-b（结果非负）
     """
     def __init__(self, ub=20):
-        self._m1 = MathL1(ub)
-        self._m2 = MathL2(ub)
+        self._m1 = AddL1(ub)
+        self._m2 = AddL2(ub)
 
     def generate(self, num):
         res0 = self._m1.generate(num) + self._m2.generate(num)
@@ -90,7 +68,7 @@ class MathL3(object):
         return [res0[i] for i in indices]
 
 
-class MathL4(object):
+class AddL4(object):
     """
     连加法 a+b+c
     """
@@ -101,10 +79,10 @@ class MathL4(object):
     def generate(self, num):
         arr = _gen_add_arr(0, self._ub, 3, num)
         ops = [['+', '+', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL5(object):
+class AddL5(object):
     """
     连减法 a-b-c（结果非负）
     """
@@ -121,17 +99,17 @@ class MathL5(object):
                 b[i] = np.random.randint(0, arr[i][0] - arr[i][1])
         arr = np.insert(arr, 2, values=b, axis=1)
         ops = [['-', '-', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL6(object):
+class AddL6(object):
     """
     连加 a+b+c 或 连减 a-b-c（结果非负）
     """
 
     def __init__(self, ub=30):
-        self._m4 = MathL4(ub)
-        self._m5 = MathL5(ub)
+        self._m4 = AddL4(ub)
+        self._m5 = AddL5(ub)
 
     def generate(self, num):
         res0 = self._m4.generate(num) + self._m5.generate(num)
@@ -139,7 +117,7 @@ class MathL6(object):
         return [res0[i] for i in indices]
 
 
-class MathL7(object):
+class AddL7(object):
     """
     连加减法 a+b-c 或 a-b+c 或 a+b+c（结果非负）
     """
@@ -157,10 +135,10 @@ class MathL7(object):
                 ops[i] = ['+', '-', '=']
             else:
                 ops[i] = ['+', '+', '=']
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL8(object):
+class AddL8(object):
     """
     负数相加 - a - b
     """
@@ -173,10 +151,10 @@ class MathL8(object):
         arr2 = _gen_add_arr(0, self._ub // 2, 1, num)
         arr = map(lambda a: [a[0][0], a[1][0]], zip(arr1, arr2))
         ops = [['-', '=']] * num
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL9(object):
+class AddL9(object):
     """
     减法 a-b, -a+b
     """
@@ -187,7 +165,7 @@ class MathL9(object):
         # a-b
         arr = _gen_add_arr(0, self._ub, 2, num)
         ops = [['-', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
     def _generate2(self, num):
         # -a+b
@@ -195,7 +173,7 @@ class MathL9(object):
         arr2 = _gen_add_arr(0, self._ub, 1, num)
         arr = map(lambda a: [a[0][0], a[1][0]], zip(arr1, arr2))
         ops = [['+', '=']] * num
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
     def generate(self, num):
         res1 = self._generate1(num)
@@ -205,7 +183,7 @@ class MathL9(object):
         return [res[i] for i in indices]
 
 
-class MathL10(object):
+class AddL10(object):
     """
     加法、减法：-a-b, -a+b, a-b
     """
@@ -214,11 +192,11 @@ class MathL10(object):
 
     def _generate1(self, num):
         # -a-b
-        arr1 = _gen_add_arr(-self._ub//2, 0, 1, num)
-        arr2 = _gen_add_arr(0, self._ub//2, 1, num)
+        arr1 = _gen_add_arr(-self._ub // 2, 0, 1, num)
+        arr2 = _gen_add_arr(0, self._ub // 2, 1, num)
         arr = map(lambda a: [a[0][0], a[1][0]], zip(arr1, arr2))
         ops = [['-', '=']] * num
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
     def _generate2(self, num):
         # -a+b
@@ -226,13 +204,13 @@ class MathL10(object):
         arr2 = _gen_add_arr(0, self._ub, 1, num)
         arr = map(lambda a: [a[0][0], a[1][0]], zip(arr1, arr2))
         ops = [['+', '=']] * num
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
     def _generate3(self, num):
         # a-b
         arr = _gen_add_arr(0, self._ub, 2, num)
         ops = [['-', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
     def generate(self, num):
         res1 = self._generate1(num)
@@ -243,7 +221,7 @@ class MathL10(object):
         return [res[i] for i in indices]
 
 
-class MathL11(object):
+class AddL11(object):
     """
     连加法 a-b-c, -a-b-c
     """
@@ -254,14 +232,14 @@ class MathL11(object):
         # a-b-c
         arr = _gen_add_arr(0, self._ub, 3, num)
         ops = [['-', '-', '=']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
     def _generate2(self, num):
         # -a-b-c
         arr = _gen_add_arr(0, self._ub, 3, num)
         arr[:, 0] = arr[:, 0] * -1
         ops = [['-', '-', '=']] * num
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
     def generate(self, num):
         res1 = self._generate1(num)
@@ -271,7 +249,7 @@ class MathL11(object):
         return [res[i] for i in indices]
 
 
-class MathL12(object):
+class AddL12(object):
     """
     连加减法 a+b-c 或 a-b+c
     """
@@ -284,10 +262,10 @@ class MathL12(object):
         for i in range(len(arr)):
             z = np.random.rand()
             ops[i] = ['+', '-', '='] if z < 0.3 else ['-', '+', '=']
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL13(object):
+class AddL13(object):
     """
     连加减法 -a+b-c 或 -a-b+c
     """
@@ -295,17 +273,17 @@ class MathL13(object):
         self._ub = ub
 
     def generate(self, num):
-        arr1 = _gen_add_arr(-self._ub//2, 0, 1, num)
+        arr1 = _gen_add_arr(-self._ub // 2, 0, 1, num)
         arr2 = _gen_add_arr(0, self._ub, 2, num)
         arr = np.c_[arr1, arr2]
         ops = [[]] * num
         for i in range(len(arr)):
             z = np.random.rand()
             ops[i] = ['+', '-', '='] if z < 0.5 else ['-', '+', '=']
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL14(object):
+class AddL14(object):
     """
     负负得正 a+(-b) 或 a-(-b)
     """
@@ -313,17 +291,17 @@ class MathL14(object):
         self._ub = ub
 
     def generate(self, num):
-        arr1 = _gen_add_arr(0, self._ub//2, 1, num)
-        arr2 = _gen_add_arr(-self._ub//2, -1, 1, num)
+        arr1 = _gen_add_arr(0, self._ub // 2, 1, num)
+        arr2 = _gen_add_arr(-self._ub // 2, -1, 1, num)
         arr = np.c_[arr1, arr2]
         ops = [[]] * num
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['+', '='] if z > 0.5 else ['-', '=']
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL15(object):
+class AddL15(object):
     """
     负负得正 -a+(-b) 或 -a-(-b)
     """
@@ -337,10 +315,10 @@ class MathL15(object):
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['+', '='] if z > 0.5 else ['-', '=']
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL16(object):
+class AddL16(object):
     """
     a+b+c, abc可以带负号
     """
@@ -351,10 +329,10 @@ class MathL16(object):
     def generate(self, num):
         arr = _gen_add_arr(-self._ub, self._ub, 3, num)
         ops = [['+', '+', '=']] * num
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL17(object):
+class AddL17(object):
     """
     加法填空 a+?=b
     """
@@ -364,10 +342,10 @@ class MathL17(object):
     def generate(self, num):
         arr = _gen_add_arr(0, self._ub, 2, num)
         ops = [['+ __ =']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL18(object):
+class AddL18(object):
     """
     减法填空 a-?=b
     """
@@ -377,10 +355,10 @@ class MathL18(object):
     def generate(self, num):
         arr = _gen_add_arr(0, self._ub, 2, num)
         ops = [['- __ =']] * num
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL19(object):
+class AddL19(object):
     """
     加减法填空 a+?=b 或 a-?=b
     """
@@ -396,10 +374,10 @@ class MathL19(object):
                 ops[i] = ['- __ =']
             else:
                 ops[i] = ['+ __ =']
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL20(object):
+class AddL20(object):
     """
     加后填空 a+b+?=c 或 a+b-?=c
     """
@@ -412,10 +390,10 @@ class MathL20(object):
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['+', '+ __ ='] if z < 0.4 else ['+', '- __ =']
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL21(object):
+class AddL21(object):
     """
     加法填空、减法填空 -a + ? = b 或 -a - ? = b
     """
@@ -430,10 +408,10 @@ class MathL21(object):
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['+ __ ='] if z < 0.4 else ['- __ =']
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL22(object):
+class AddL22(object):
     """
     加减法填空 a-b+?=c 或 a-b-?=c
     """
@@ -447,10 +425,10 @@ class MathL22(object):
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['-', '+ __ ='] if z < 0.5 else ['-', '- __ =']
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL23(object):
+class AddL23(object):
     """
     加减法填空 -a-b+?=c 或 -a-b-?=c
     """
@@ -465,10 +443,10 @@ class MathL23(object):
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['-', '+ __ ='] if z < 0.5 else ['-', '- __ =']
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL24(object):
+class AddL24(object):
     """
     加减法填空 -a+b+?=c 或 -a+b-?=c
     """
@@ -482,10 +460,10 @@ class MathL24(object):
         for i in range(num):
             z = np.random.rand()
             ops[i] = ['+', '+ __ ='] if z < 0.5 else ['+', '- __ =']
-        return _to_result(arr, ops, skip={0})
+        return to_result(arr, ops, skip={0})
 
 
-class MathL25(object):
+class AddL25(object):
     """
     加减法填空 -a+b+?=-c 或 -a-b+?=-c
     """
@@ -502,10 +480,10 @@ class MathL25(object):
             z = np.random.rand()
             ops[i] = ['+', '+ __ ='] if z < 0.5 else ['-', '+ __ =']
 
-        return _to_result(arr, ops, skip={0, 2})
+        return to_result(arr, ops, skip={0, 2})
 
 
-class MathL26(object):
+class AddL26(object):
     """
     中间填空 a+?+b=c 或 a-?-b=c
     """
@@ -520,10 +498,10 @@ class MathL26(object):
             z = np.random.rand()
             ops[i] = ['+ __ +', '='] if z < 0.5 else ['- __ -', '=']
 
-        return _to_result(arr, ops)
+        return to_result(arr, ops)
 
 
-class MathL27(object):
+class AddL27(object):
     """
     中间填空 -a+?+b=-c 或 -a-?-b=c
     """
@@ -540,10 +518,10 @@ class MathL27(object):
             if np.random.rand() < 0.5:
                 arr[i][2] = arr[i][2] * -1
 
-        return _to_result(arr, ops, skip={0, 2})
+        return to_result(arr, ops, skip={0, 2})
 
 
-class MathL28(object):
+class AddL28(object):
     """
     a+b+?=c 或 ?+a+b=c 或 a+?+b=c, abc可以带负号
     """
@@ -554,20 +532,20 @@ class MathL28(object):
         # a+b+?=c
         arr = _gen_add_arr(-self._ub, self._ub, 3, num)
         ops = [['+', '+ __ =']] * num
-        return _to_result(arr, ops, skip={0, 2})
+        return to_result(arr, ops, skip={0, 2})
 
     def _generate2(self, num):
         # ?+a+b=c
         arr = _gen_add_arr(-self._ub, self._ub, 3, num)
         ops = [['+', '=']] * num
-        res = _to_result(arr, ops, skip={2})
+        res = to_result(arr, ops, skip={2})
         return ['__ + ' + res[i] for i in range(num)]
 
     def _generate3(self, num):
         # a+?+b=c
         arr = _gen_add_arr(-self._ub, self._ub, 3, num)
         ops = [['+ __ +', '=']] * num
-        return _to_result(arr, ops, skip={0, 2})
+        return to_result(arr, ops, skip={0, 2})
 
     def generate(self, num):
         res1 = self._generate1(num)
