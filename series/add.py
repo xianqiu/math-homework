@@ -1,15 +1,13 @@
-__all__ = [
-    'AddL1', 'AddL2', 'AddL3', 'AddL4', 'AddL5',
-    'AddL6', 'AddL7', 'AddL8', 'AddL9', 'AddL10',
-    'AddL11', 'AddL12', 'AddL13', 'AddL14', 'AddL15',
-    'AddL16', 'AddL17', 'AddL18', 'AddL19', 'AddL20',
-    'AddL21', 'AddL22', 'AddL23', 'AddL24', 'AddL25',
-    'AddL26', 'AddL27', 'AddL28'
-]
+__all__ = []
 
 import numpy as np
 
 from .utils import to_result
+
+SERIES = 'Add'
+MAX_LEVEL = 28
+for i in range(MAX_LEVEL):
+    __all__.append(SERIES + 'L%d' % (i + 1))
 
 
 def _gen_add_arr(lb, ub, k, num):

@@ -25,7 +25,8 @@ class MathWork(object):
         info = ''
         if self.showHeaderInfo is True:
             t = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-            info = 'Level = {}.   Generated at {}'.format(self._lv, t)
+            info = 'Series = {}, Level = {}.   Generated at {}'.\
+                format(self._se, self._lv, t)
         return info
 
     def go(self):
@@ -33,9 +34,10 @@ class MathWork(object):
         items = mathLL().generate(self.pageNum * self.pageCapacity)
         self._config['headerInfo'] = self.gen_header_info()
         Formatter(items, **self._config).save()
-
-        congrats = ['好好学习，天天向上',
+        congrats = ['好好学习，天天向上。',
+                    '>> Series = {}'.format(self._se),
                     '>> Level = {}'.format(self._lv),
                     '>> 页数 = {}'.format(self.pageNum),
-                    '恭喜宝宝，又可以做题了。']
+                    '不要放弃。']
         print('\n'.join(congrats))
+

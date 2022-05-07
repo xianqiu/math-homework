@@ -7,10 +7,12 @@ class Formatter(object):
 
     _config = {
         'pageCapacity': 10,  # 每页的题目数
-        'paperHeight': 297,  # 纸高 mm
-        'paperWidth': 210,  # 纸宽 mm
-        'topMargin': 25.4,
-        'bottomMargin': 12.7,
+        'paperHeight': 841.89,  # A4纸高 pt
+        'paperWidth': 595.27,  # A4纸宽 pt
+        'topMargin': 72,
+        'bottomMargin': 36,
+        'leftMargin': 72,
+        'rightMargin': 12,
         'outputName': 'math-work.pdf',
         'headerInfo': '',
     }
@@ -25,21 +27,18 @@ class Formatter(object):
                 self._config[k] = kwargs[k]
             setattr(self, k, self._config[k])
 
-        self._inch_to_mm = 25.4  # 英寸 -> 毫米 换算
-        self._pt_to_mm = self._inch_to_mm / 72  # 字号一磅 -> 毫米 换算
         self._content = []
 
     def _calculate_font_size(self):
-        # 两倍行距
-        h = self.paperHeight - self.topMargin - self.bottomMargin
-        s_pt = h / (2 * self.pageCapacity + 1)
-        return s_pt / self._pt_to_mm
+        h = self.paperHeight - self.topMargin - self.bottomMargin - 72
+        s = h / (2 * self.pageCapacity - 1)
+        return s
 
     def _format_content(self):
         s = self._calculate_font_size()
         style = ParagraphStyle(name='Normal',
                                fontSize=s,
-                               leading=2*s)
+                               leading=2*s)  # 1倍行距
         self._content = [Paragraph(it, style) for it in self._items]
 
     @staticmethod
@@ -54,8 +53,11 @@ class Formatter(object):
         """
         doc = BaseDocTemplate(
             self.outputName,
-            topMargin=self.topMargin/self._pt_to_mm,
-            bottomMargin=self.bottomMargin/self._pt_to_mm
+            pagesize=(self.paperWidth, self.paperHeight),
+            topMargin=self.topMargin,
+            bottomMargin=self.bottomMargin,
+            leftMargin=self.leftMargin,
+            rightMargin=self.rightMargin
         )
         # add header
         frame = Frame(doc.leftMargin,
