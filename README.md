@@ -74,7 +74,7 @@ from mathw import MathWork
 if __name__ == '__main__':
     # 生成作业并保存成PDF
     MathWork(
-        Sereis='Add', # Add - 加减法；Mult - 乘除法
+        series='Add', # Add - 加减法；Mult - 乘除法
         level=4,  # 等级
         pageNum=40  # 页数
     ).go()
