@@ -1,7 +1,10 @@
+__all__ = ['MathWork']
+
+
 import datetime
 
-from series import *
-from formatter import Formatter
+from .series import *
+from .formatter import Formatter
 
 
 class MathWork(object):
