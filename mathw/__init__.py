@@ -1,6 +1,5 @@
 __all__ = ['MathWork']
 
-
 import datetime
 
 from .series import *

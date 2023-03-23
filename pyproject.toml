@@ -1,0 +1,35 @@
+# Reference
+# https://packaging.python.org/en/latest/tutorials/packaging-projects/
+# ******************
+# Command Reminder *
+# ******************
+# 1. install build (optional): [py -m pip install --upgrade build]
+# 2. build: [py -m build]
+# 3. install twine (optional): [py -m pip install --upgrade twine]
+# 4. upload: [py -m twine upload dist/*]
+
+[build-system]
+requires = ["hatchling", "reportlab"]
+build-backend = "hatchling.build"
+
+[project]
+name = "mathw"
+version = "1.0.0"
+authors = [
+  { name="xqiu", email="x.qiu@qq.com" },
+]
+description = "Children's Math Practice."
+readme = "README.md"
+requires-python = ">=3.6"
+dependencies = [
+  'reportlab >= 3.6.12 ',
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/xianqiu/math-homework"
+
