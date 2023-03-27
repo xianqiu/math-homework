@@ -23,7 +23,7 @@ class MathWork(object):
                 self._config[k] = kwargs[k]
             setattr(self, k, self._config[k])
 
-    def gen_header_info(self):
+    def _gen_header_info(self):
         info = ''
         if self.showHeaderInfo is True:
             t = datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')
@@ -34,7 +34,7 @@ class MathWork(object):
     def go(self):
         mathLL = globals()['{}L{}'.format(self._se, self._lv)]
         items = mathLL().generate(self.pageNum * self.pageCapacity)
-        self._config['headerInfo'] = self.gen_header_info()
+        self._config['headerInfo'] = self._gen_header_info()
         Formatter(items, **self._config).save()
         congrats = ['好好学习，天天向上。',
                     '>> Series = {}'.format(self._se),
