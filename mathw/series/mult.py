@@ -1,15 +1,6 @@
-__all__ = []
-
-
 import numpy as np
 
 from .utils import to_result, insert_placeholder
-
-
-SERIES = 'Mult'
-MAX_LEVEL = 22
-for i in range(MAX_LEVEL):
-    __all__.append(SERIES + 'L%d' % (i + 1))
 
 
 class MultL1(object):

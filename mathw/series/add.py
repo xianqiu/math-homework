@@ -1,13 +1,6 @@
-__all__ = []
-
 import numpy as np
 
 from .utils import to_result
-
-SERIES = 'Add'
-MAX_LEVEL = 28
-for i in range(MAX_LEVEL):
-    __all__.append(SERIES + 'L%d' % (i + 1))
 
 
 def _gen_add_arr(lb, ub, k, num):
