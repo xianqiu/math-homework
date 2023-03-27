@@ -42,7 +42,7 @@ class Formatter(object):
         self._content = [Paragraph(it, style) for it in self._items]
 
     @staticmethod
-    def header(canvas, doc, content):
+    def _header(canvas, doc, content):
         canvas.saveState()
         w, h = content.wrap(doc.width, doc.topMargin)
         content.drawOn(canvas, doc.leftMargin + doc.width - w, doc.height + doc.topMargin - h)
@@ -66,7 +66,7 @@ class Formatter(object):
                       doc.height - 20,
                       id='normal')
         template = PageTemplate(frames=frame,
-                                onPage=partial(self.header,
+                                onPage=partial(self._header,
                                                content=Paragraph(self.headerInfo))
                                 )
         doc.addPageTemplates([template])
