@@ -9,12 +9,12 @@
 # 4. upload: [py -m twine upload dist/*]
 
 [build-system]
-requires = ["hatchling", "reportlab"]
+requires = ["hatchling"]
 build-backend = "hatchling.build"
 
 [project]
 name = "mathw"
-version = "1.0.1"
+version = "1.1.1"
 authors = [
   { name="xqiu", email="x.qiu@qq.com" },
 ]
@@ -22,7 +22,8 @@ description = "Children's Math Practice."
 readme = "README.md"
 requires-python = ">=3.6"
 dependencies = [
-  'reportlab >= 3.6.12 ',
+    'reportlab >= 3.6.12',
+    'numpy >= 1.2.34'
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

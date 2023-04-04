@@ -545,3 +545,4 @@ class AddL28(object):
         res = res1 + res2 + res3
         indices = np.random.randint(0, len(res), num)
         return [res[i] for i in indices]
+
