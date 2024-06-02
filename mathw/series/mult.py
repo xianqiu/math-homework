@@ -482,7 +482,7 @@ class MultL18(object):
     def generate(self, num):
         arr = np.random.randint(self._lb, self._ub + 1, (num, 3))
         a, b, c = arr[:, 0], arr[:, 1], arr[:, 2]
-        d = a * b
+        d = a * b * c
         arr = np.array([b, c, d]).T
         arr1 = insert_placeholder(arr, 0)
         arr2 = insert_placeholder(arr, 1)
