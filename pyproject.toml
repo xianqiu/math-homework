@@ -3,10 +3,10 @@
 # ******************
 # Command Reminder *
 # ******************
-# 1. install build (optional): [py -m pip install --upgrade build]
-# 2. build: [py -m build]
-# 3. install twine (optional): [py -m pip install --upgrade twine]
-# 4. upload: [py -m twine upload dist/*]
+# 1. install build (optional): [python3 -m pip install --upgrade build]
+# 2. build: [python3 -m build]
+# 3. install twine (optional): [python3 -m pip install --upgrade twine]
+# 4. upload: [python3 -m twine upload dist/*]
 
 [build-system]
 requires = ["hatchling"]
@@ -14,7 +14,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mathw"
-version = "1.1.1"
+version = "1.1.2"
 authors = [
   { name="xqiu", email="x.qiu@qq.com" },
 ]
