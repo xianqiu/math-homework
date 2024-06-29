@@ -1,3 +1,4 @@
+import numpy as np
 
 
 def to_result(arr, ops, wrap=True, skip=None, cc=None):
@@ -54,5 +55,41 @@ def insert_placeholder(arr, col, x='__'):
     for row in arr:
         row = list(row)
         res.append(row[: col] + [x] + row[col:])
+    return res
+
+
+def gen_ops(rows, cols):
+    """ 随机生成操作符：+,-,×,÷
+    :param rows: 行数
+    :param cols: 列数，允许的值为：2,3,4
+    """
+    def set_op(perm):
+        op_dict = {
+            0: '+',
+            1: '-',
+            2: '×',
+            3: '÷'
+        }
+        return [op_dict[v] for v in perm]
+
+    ops = []
+    for i in range(rows):
+        perm = np.random.permutation(4)
+        ops.append(set_op(perm)[0:cols])
+
+    return ops
+
+
+def evaluate(s):
+    """
+    返回算式 s 的计算结果
+    """
+    s1 = s.replace('×', '*')
+    s2 = s1.replace('÷', '/')
+    try:
+        res = int(eval(s2)) # 引发 ZeroDivisionError 异常
+    except ZeroDivisionError:
+        # print("Error: Division by zero")
+        res = 0
     return res
 

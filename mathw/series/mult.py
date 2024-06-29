@@ -1,6 +1,6 @@
 import numpy as np
 
-from .utils import to_result, insert_placeholder
+from .utils import to_result, insert_placeholder, gen_ops, evaluate
 
 
 class MultL1(object):
@@ -576,3 +576,79 @@ class MultL22(object):
         indices = np.random.randint(0, len(arr), num)
         arr = [arr[i] for i in indices]
         return to_result(arr, ops, skip={0, 2})
+
+
+class MultL23(object):
+    """
+    四则运算 a @ b @ c @ d = ?
+    其中 @ in {+,-,×,÷}, a,b,c,d 非负
+    """
+    def __init__(self, lb=0, ub=30):
+        self._lb = lb
+        self._ub = ub
+
+    def generate(self, num):
+        arr = np.random.randint(self._lb, self._ub + 1, (num, 4))
+        ops = [row + ['='] for row in gen_ops(num, 3)]
+        for i in range(num):
+            for j in range(3):
+                if ops[i][j] == '÷':
+                    arr[i][j] *= arr[i][j+1]
+                    break
+        return to_result(arr, ops)
+
+
+class MultL24(object):
+    """
+        四则运算 a @ b @ c @ d = ?
+        其中 @ in {+,-,×,÷}, a,b,c,d 可以为负
+    """
+
+    def __init__(self, lb=-30, ub=30):
+        self._lb = lb
+        self._ub = ub
+
+    def generate(self, num):
+        return MultL23(self._lb, self._ub).generate(num)
+
+
+class MultL25(object):
+    """
+        四则运算填空 a @ b @ c @ _ = d
+        其中 @ in {+,-,×,÷}, a,b,c,d 非负，填空的位置随机
+    """
+    def __init__(self, lb=0, ub=30):
+        self._lb = lb
+        self._ub = ub
+
+    def generate(self, num):
+        res = [self._gen_one() for _ in range(num)]
+        return res
+
+    def _gen_one(self):
+        arr = np.random.randint(self._lb, self._ub + 1, 4)
+        ops = gen_ops(1, 3)[0]
+        for i in range(3):
+            if ops[i] == '÷':
+                arr[i] *= arr[i+1]
+                break
+
+        temp = to_result([arr], [ops])
+        res = str(evaluate(temp[0]))
+        # 随机选择 placeholder
+        p = np.random.randint(0, 4)
+        arr = list(arr)
+        arr[p] = '__'
+        arr.append(res)
+        ops.append('=')
+        return to_result([arr], [ops])[0]
+
+
+class MultL26(object):
+
+    def __init__(self, lb=-30, ub=30):
+        self._lb = lb
+        self._ub = ub
+
+    def generate(self, num):
+        return MultL25(self._lb, self._ub).generate(num)
