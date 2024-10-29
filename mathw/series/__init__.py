@@ -5,6 +5,7 @@ import sys
 
 from .add import *
 from .mult import *
+from .frac import *
 
 
 def clean_import(prefix):
@@ -16,4 +17,5 @@ def clean_import(prefix):
 
 clean_import('add')
 clean_import('mult')
+clean_import('frac')
 

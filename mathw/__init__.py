@@ -16,7 +16,7 @@ class MathWork(object):
     }
 
     def __init__(self, series, level, **kwargs):
-        self._se = series
+        self._se = series.capitalize()
         self._lv = level
         for k, v in self._config.items():
             if k in kwargs:

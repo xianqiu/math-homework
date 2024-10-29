@@ -27,10 +27,10 @@ def to_result(arr, ops, wrap=True, skip=None, cc=None):
                 comb.append(row[i])
             # 给负数加括号
             elif wrap and row[i] < 0 and i not in skip:
-                comb.append('(' + str(int(row[i])) + ')')
+                comb.append('(' + str(row[i]) + ')')
             # 数字转成字符
             else:
-                comb.append(str(int(row[i])))
+                comb.append(str(row[i]))
             # 符号
             if i < len(op):
                 comb.append(op[i])
