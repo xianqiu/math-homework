@@ -6,13 +6,14 @@ from functools import partial
 class Formatter(object):
 
     _config = {
-        'pageCapacity': 10,  # 每页的题目数
+        'pageCapacity': 10,  # 每页的题目数（行数）
         'paperHeight': 841.89,  # A4纸高 pt
         'paperWidth': 595.27,  # A4纸宽 pt
         'topMargin': 72,
         'bottomMargin': 36,
         'leftMargin': 72,
         'rightMargin': 12,
+        'fontName': 'Helvetica',  # Helvetica, Times-Roman, Courier
         'outputName': 'math-work.pdf',
         'headerInfo': '',
     }
@@ -35,17 +36,21 @@ class Formatter(object):
         return s
 
     def _format_content(self):
-        s = self._calculate_font_size()
+        font_size = self._calculate_font_size()  # 字号
+        line_space = 2 * font_size  # 行距
         style = ParagraphStyle(name='Normal',
-                               fontSize=s,
-                               leading=2*s)  # 1倍行距
+                               fontName=self._config['fontName'],
+                               fontSize=font_size,
+                               leading=line_space)
         self._content = [Paragraph(it, style) for it in self._items]
 
     @staticmethod
     def _header(canvas, doc, content):
         canvas.saveState()
         w, h = content.wrap(doc.width, doc.topMargin)
-        content.drawOn(canvas, doc.leftMargin + doc.width - w, doc.height + doc.topMargin - h)
+        content.drawOn(canvas,
+                       doc.leftMargin + doc.width - w,
+                       doc.height + doc.topMargin - h)
         canvas.restoreState()
 
     def save(self):

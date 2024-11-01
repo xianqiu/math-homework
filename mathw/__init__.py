@@ -2,15 +2,15 @@ __all__ = ['MathWork']
 
 import datetime
 
-from .series import *
+from .se import *
 from .formatter import Formatter
 
 
 class MathWork(object):
 
     _config = {
-        'pageNum': 40,  # 生成的页数
-        'pageCapacity': 10,  # 每页的题目数'
+        'pageNum': 20,  # 生成的页数
+        'pageCapacity': 10, # 每页行数
         'outputName': 'math-work.pdf',
         'showHeaderInfo': True,
     }
@@ -18,6 +18,9 @@ class MathWork(object):
     def __init__(self, series, level, **kwargs):
         self._se = series.capitalize()
         self._lv = level
+        # 调整页面的行数
+        self._refine_page_capacity()
+        # 要放在 setattr 之前
         for k, v in self._config.items():
             if k in kwargs:
                 self._config[k] = kwargs[k]
@@ -43,3 +46,25 @@ class MathWork(object):
                     '不要放弃。']
         print('\n'.join(congrats))
 
+    def _refine_page_capacity(self):
+        config = {
+            'Frac': [
+                {
+                    'levels': {8, 9, 17, 18},
+                    'pageCapacity': 12
+                },
+            ],
+            'Form': [
+                {
+                    'levels': {8, 9},
+                    'pageCapacity': self._config['pageCapacity']
+                                    + self._config['pageCapacity'] // 2 - 1
+                },
+            ]
+        }
+        if self._se not in config.keys():
+            return
+        for item in config[self._se]:
+            if self._lv in item['levels']:
+                self._config['pageCapacity'] = item['pageCapacity']
+                break
