@@ -1,7 +1,7 @@
 from mathw import MathWork
 
 
-def test_series(series, max_lv, **kwargs):
+def _test_series(series, max_lv, **kwargs):
     for i in range(max_lv):
         lv = i + 1
         print(f">> TEST: series = {series}, level = {lv}")
@@ -15,9 +15,9 @@ def test_series(series, max_lv, **kwargs):
 
 
 def test():
-    test_series('add', max_lv=24)
-    test_series('mult', max_lv=26)
-    test_series('frac', max_lv=18)
+    _test_series('add', max_lv=24)
+    _test_series('mult', max_lv=26)
+    _test_series('frac', max_lv=18)
     # test_series('form', max_lv=16, pageCapacity=14)
 
 

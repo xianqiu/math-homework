@@ -1,7 +1,6 @@
 __all__ = ['MathWork']
 
 import datetime
-
 from .se import *
 from .formatter import Formatter
 

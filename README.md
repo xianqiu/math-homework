@@ -124,7 +124,7 @@ if __name__ == '__main__':
     MathWork(
         # Add - 加减法；Mult - 乘除法
         # Frac - 分数; Form - 解方程
-        series='Mult',
+        series='Form',
         level=4,  # 等级
         pageNum=20  # 页数
     ).go()
