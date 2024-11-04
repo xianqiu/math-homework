@@ -2,9 +2,10 @@ from mathw import MathWork
 
 
 if __name__ == '__main__':
+
     MathWork(
-        series='frac',  # 类别
-        pageNum=20,  # 页数
-        level=18,  # 等级
+        series='form',  # 类别
+        pageNum=10,  # 页数
+        level=14,  # 等级
     ).go()
 

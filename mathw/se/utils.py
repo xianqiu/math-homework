@@ -213,7 +213,7 @@ def _add_cc(row, cc):
     return row
 
 
-def insert_placeholder(arr, col=-1):
+def insert_placeholder(arr, col=-1, x='__'):
     """
     在制定的列插入一列占位符 ['__', '__', '__', ...]
     例如：arr = [[8, 3, 5], [5, 4, 2], ...], col = 1,
@@ -222,22 +222,20 @@ def insert_placeholder(arr, col=-1):
             例如返回 [[8, '__', 3, 5], [5, 4, '__', 2]...]
     :param arr: list, 二维列表
     :param col: int, 插入的列的下标
+    :param x: str, 占位符
     :return list
     """
-    # 创建占位符
-    placeholder = '__'
-
     # 处理 col >= 0 的情况
     if col >= 0:
         for row in arr:
-            row.insert(col, placeholder)
+            row.insert(col, x)
 
     # 处理 col = -1 的情况
     elif col == -1:
         for row in arr:
             # 生成随机位置
             random_col = random.randint(0, len(row)-1)
-            row.insert(random_col, placeholder)
+            row.insert(random_col, x)
 
     return arr
 
@@ -254,3 +252,5 @@ def calculate_formula_result(formula):
         # print("Error: Division by zero")
         res = 0
     return res
+
+

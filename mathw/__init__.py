@@ -33,17 +33,22 @@ class MathWork(object):
                 format(self._se, self._lv, t)
         return info
 
-    def go(self):
-        mathLL = globals()['{}L{}'.format(self._se, self._lv)]
-        items = mathLL().generate(self.pageNum * self.pageCapacity)
-        self._config['headerInfo'] = self._gen_header_info()
-        Formatter(items, **self._config).save()
-        congrats = ['好好学习，天天向上。',
+    def _print_congrats(self):
+        congrats = ['== 好好学习，天天向上 ==',
                     '>> Series = {}'.format(self._se),
                     '>> Level = {}'.format(self._lv),
                     '>> 页数 = {}'.format(self.pageNum),
-                    '不要放弃。']
+                    '>> Done.']
         print('\n'.join(congrats))
+
+    def go(self):
+        self._config['headerInfo'] = self._gen_header_info()
+        mathLL = globals()['{}L{}'.format(self._se, self._lv)]
+        content = mathLL().generate(self.pageNum * self.pageCapacity)
+        content = self._refine_content(content)
+        print(content)
+        Formatter(content, **self._config).save()
+        self._print_congrats()
 
     def _refine_page_capacity(self):
         config = {
@@ -55,9 +60,12 @@ class MathWork(object):
             ],
             'Form': [
                 {
-                    'levels': {8, 9},
-                    'pageCapacity': self._config['pageCapacity']
-                                    + self._config['pageCapacity'] // 2 - 1
+                    'levels': {4, 5, 6},
+                    'pageCapacity': 13
+                },
+                {
+                    'levels': {11},
+                    'pageCapacity': 12
                 },
             ]
         }
@@ -67,3 +75,33 @@ class MathWork(object):
             if self._lv in item['levels']:
                 self._config['pageCapacity'] = item['pageCapacity']
                 break
+
+    def _separate_equations(self, content):
+        """ 给方程组添加分隔符。
+        """
+        k = 2 # 方程组的方程数量
+        sep_length = 40 # 分隔符的长度
+        sep = '-' * sep_length
+        # 计算一页的方程个数(eq_num)
+        # 一页的行数(pageCapacity) = 分隔符行数(eq_num / k + 1) + 方程个数(eq_num)
+        eq_num = (self.pageCapacity - 1) * k / (k+1)
+        res = []
+        for i in range(len(content)):
+            j = i % eq_num
+            # 每页开头添加一行分隔符
+            if j == 0:
+                res.append(sep)
+            # 每k个方程添加一行分隔符
+            if j % k == k-1:
+                res.append(content[i])
+                res.append(sep)
+            else:
+                res.append(content[i])
+
+        return res[0: self.pageCapacity * self.pageNum]
+
+    def _refine_content(self, content):
+        if self._se == 'Form':
+            if self._lv in {4, 5, 6}:
+                return self._separate_equations(content)
+        return content
