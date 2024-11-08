@@ -46,7 +46,6 @@ class MathWork(object):
         mathLL = globals()['{}L{}'.format(self._se, self._lv)]
         content = mathLL().generate(self.pageNum * self.pageCapacity)
         content = self._refine_content(content)
-        print(content)
         Formatter(content, **self._config).save()
         self._print_congrats()
 
