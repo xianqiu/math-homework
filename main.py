@@ -5,7 +5,7 @@ if __name__ == '__main__':
 
     MathWork(
         series='form',  # 类别
-        pageNum=10,  # 页数
-        level=14,  # 等级
+        pageNum=4,  # 页数
+        level=4,  # 等级
     ).go()
 

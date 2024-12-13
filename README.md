@@ -101,7 +101,7 @@
 | 2  | 一元方程  | ax+b=c                      | abc是分数     |
 | 3  | 一元方程  | ax+b=c                      | abc是小数     |
 | 4  | 二元方程组 | ax+by=c, dx+ey=f            | abxydef是整数 |
-| 5  | 二元方程组 | ax+by=c, dx+ey=f            | abdef是     |
+| 5  | 二元方程组 | ax+by=c, dx+ey=f            | abdef是分数   |
 | 6  | 二元方程组 | ax+by=c, dx+ey=f            | abcdef是小数  |
 | 7  | 二次展开  | (ax+b)^2=                   | ab是整数      |
 | 8  | 二次展开  | (ax+b)(ax-b)=               | ab是整数      |

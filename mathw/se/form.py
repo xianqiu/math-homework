@@ -83,7 +83,7 @@ class FormL4(object):
     """
 
     def __init__(self):
-        self.ub = 20
+        self.ub = 10
 
     def generate(self, num):
         abxyde = np.array(gen_arr(m=num//2, n=6, lb=-self.ub, ub=self.ub,
@@ -114,7 +114,7 @@ class FormL5(object):
     """
 
     def __init__(self):
-        self.ub = 20
+        self.ub = 15
 
     def generate(self, num):
         arr = gen_arr(m=num, n=3, lb=-self.ub, ub=self.ub,
@@ -132,7 +132,7 @@ class FormL6(object):
     """
 
     def __init__(self):
-        self.ub = 20
+        self.ub = 15
 
     def generate(self, num):
         arr = gen_arr(m=num, n=3, lb=-self.ub, ub=self.ub,
