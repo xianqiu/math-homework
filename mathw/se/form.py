@@ -94,8 +94,8 @@ class FormL4(object):
         c = a * x + b * y
         f = d * x + e * y
 
-        arr1 = np.array([a, b, c]).T
-        arr2 = np.array([d, e, f]).T
+        arr1 = np.column_stack((a, b, c))
+        arr2 = np.column_stack((d, e, f))
         arr = []
         for p in zip(arr1, arr2):
             arr.append(p[0])
