@@ -169,6 +169,8 @@ def _auto_wrap(item, skip=None):
                 # r < 0 则加括号
                 if item[i][0] == '-':
                     is_wrap = True
+            elif isinstance(item[i], str) and item[i][0] == '-':
+                is_wrap = True
             elif isinstance(item[i], numbers.Number):
                 if item[i] < 0:
                     is_wrap = True

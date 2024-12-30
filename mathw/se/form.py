@@ -145,28 +145,6 @@ class FormL6(object):
 class FormL7(object):
     """
     二次展开, ab是整数
-    (ax+b)^2=
-    """
-
-    def __init__(self):
-        self.ub = 20
-
-    def generate(self, num):
-        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub,
-                      dtype='int')
-        b = gen_arr(m=num, n=1, lb=0, ub=self.ub,
-                    dtype='int')
-        arr = np.hstack((a, b))
-        arr = _add_chars(arr, chars=['x'])
-        ops = gen_ops(m=num, n=1, chars={'+', '-'})
-        temp = to_content(arr, ops, cc={(0,2)})
-        res = [item + '^2 =' for item in temp]
-        return res
-
-
-class FormL8(object):
-    """
-    二次展开, ab是整数
     (ax+b)(ax-b)=
     """
 
@@ -188,7 +166,75 @@ class FormL8(object):
 
         return res
 
+
+class FormL8(object):
+    """
+    因式分解，ab是整数
+    a^2x^2-b^2=
+    """
+    def __init__(self):
+        self.ub = 30
+
+    def generate(self, num):
+        arr = gen_arr(m=num, n=2, lb=11, ub=self.ub, dtype='int')
+        arr = np.array(arr)
+        arr = arr * arr
+        arr = _add_chars(arr, chars=['x^2'])
+        ops = [['-','=']] * num
+        return to_content(arr, ops)
+
+
 class FormL9(object):
+    """
+    二次展开, ab是整数
+    (ax+b)^2=
+    """
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub,
+                      dtype='int')
+        b = gen_arr(m=num, n=1, lb=0, ub=self.ub,
+                    dtype='int')
+        arr = np.hstack((a, b))
+        arr = _add_chars(arr, chars=['x'])
+        ops = gen_ops(m=num, n=1, chars={'+', '-'})
+        temp = to_content(arr, ops, cc={(0,2)})
+        res = [item + '^2 =' for item in temp]
+        return res
+
+
+class FormL10(object):
+    """
+    因式分解, ab是整数
+    a^2x^2+2abx+b^2=
+    """
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        a = gen_arr(m=num, n=1, lb=1, ub=self.ub,
+                      dtype='int')
+        b = gen_arr(m=num, n=1, lb=1, ub=self.ub,
+                    dtype='int')
+        a = np.array(a)
+        b = np.array(b)
+        ab = 2 * a * b
+        a2 = a * a
+        b2 = b * b
+        arr = np.hstack((a2, ab, b2))
+        arr = _add_chars(arr, chars=['x^2', 'x'])
+
+        ops1 = gen_ops(m=num, n=1, chars=['+', '-'])
+        ops2 = [['+', '=']] * num
+        ops = np.hstack((ops1, ops2))
+        return to_content(arr, ops)
+
+
+class FormL9X(object):
     """
     二次展开, abcd是整数
     (ax+b)(cx+d)=
@@ -217,7 +263,7 @@ class FormL9(object):
         return res
 
 
-class FormL10(object):
+class FormL10X(object):
     """
     二次方程, abc是整数
     ax^2+b=c
