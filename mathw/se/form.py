@@ -283,9 +283,7 @@ class FormL12(object):
         return to_content(arr, ops)
 
     def generate(self, num):
-        res1 = self._gen1(num)
-        res2 = self._gen2(num)
-        res = res1 + res2
+        res = self._gen1(num//2 + 1) + self._gen2(num//2 + 1)
         np.random.shuffle(res)
         return res[0: num]
 
@@ -325,28 +323,61 @@ class FormL13(object):
 class FormL14(object):
     """
     二次方程, bc是正整数
-    x^2@(b+c)x+bc=0, @ in {+,-}
+    x^2 @ (b+c)x + bc = 0, @ in {+,-}
+    x^2 + (b-c)x - bc = 0
     """
 
     def __init__(self):
         self.ub = 20
 
-    def generate(self, num):
+    def _gen1(self, num):
+        # x^2 @ (b+c)x + bc = 0, @ in {+,-}
         bc = np.array(gen_arr(m=num, n=2, lb=0, ub=self.ub,
-                     dtype='int'))
+                              dtype='int'))
         b, c = bc[:, 0], bc[:, 1]
         d = b + c
         e = b * c
 
         dxe = _add_chars(np.array([d, e, [0] * num]).T, 'x')
-        arr = np.hstack(([['x^2']]*num, dxe))
-        ops = np.hstack((gen_ops(m=num, n=1, chars={'+', '-'}),
-                      [['+', '=']]*num))
+        arr = np.hstack(([['x^2']] * num, dxe))
+
+        ops1 = gen_ops(m=num, n=1, chars={'+', '-'})
+        ops2 = [['+', '=']] * num
+        ops = np.hstack((ops1, ops2))
 
         return to_content(arr, ops)
 
+    def _gen2(self, num):
+        # x^2 + (b-c)x - bc = 0, @ in {+,-} distinct
+        bc = np.array(gen_arr(m=num, n=2, lb=0, ub=self.ub,
+                              dtype='int'))
+        b, c = bc[:, 0], bc[:, 1]
+        d = b - c
+        # refine format
+        ops1 = []
+        for i in range(len(d)):
+            if d[i] < 0:
+                d[i] = -d[i]
+                ops1.append(['-'])
+            else:
+                ops1.append(['+'])
 
-class FormL15(object):
+        e = b * c
+        dxe = _add_chars(np.array([d, e, [0] * num]).T, 'x')
+        arr = np.hstack(([['x^2']] * num, dxe))
+
+        ops2 = [['-', '=']] * num
+        ops = np.hstack((ops1, ops2))
+
+        return to_content(arr, ops)
+
+    def generate(self, num):
+        res = self._gen1(num//2 + 1) + self._gen2(num//2 + 1)
+        np.random.shuffle(res)
+        return res[0:num]
+
+
+class FormL15X(object):
     """
     二次方程, bc是正整数
     x^2+(b-c)x-bc=0
@@ -369,7 +400,7 @@ class FormL15(object):
         return to_content(arr, ops)
 
 
-class FormL16(object):
+class FormL15(object):
     """
     二次方程, bc是正整数
     ax^2+bx+c=0

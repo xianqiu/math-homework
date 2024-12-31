@@ -34,11 +34,12 @@ class MathWork(object):
         return info
 
     def _print_congrats(self):
-        congrats = ['== 好好学习，天天向上 ==',
-                    '>> Series = {}'.format(self._se),
-                    '>> Level = {}'.format(self._lv),
-                    '>> 页数 = {}'.format(self.pageNum),
-                    '>> Done.']
+        congrats = [">> [Math Exercises Generated]",
+                    f"   |-- series = {self._se}",
+                    f"   |-- level = {self._lv}",
+                    f"   |-- pages = {self.pageNum}",
+                    f"   |-- filename = '{self.outputName}'",
+                    f"   |-- {datetime.datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"]
         print('\n'.join(congrats))
 
     def go(self):
