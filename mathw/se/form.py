@@ -1,29 +1,6 @@
 import numpy as np
 
-from .utils import to_content, gen_arr, gen_ops
-
-
-def _add_chars(arr, chars):
-    """
-    给二维数组 arr 中每一行逐个添加 chars 中的字符。
-    例如：arr[i]是arr的第i行，假设 arr[i] = [3, 5, 2]，那么
-    1、当 vars = ['x', 'y', 'z'] 时，返回 ['3x', '5y', '2z']
-    2、当 vars = ['x', 'y'] 时，返回 ['3x', '5y', 2]
-    3、当 vars = ['x', '', 'z'] 时，返回 ['3x', 5, '2z']
-    :param arr: list, 二维数组
-    :parma chars: list, 字符串列表
-    :return: list
-    """
-    result = []
-    for row in arr:
-        new_row = []
-        for i, value in enumerate(row):
-            if i < len(chars) and chars[i] != '':
-                new_row.append(f"{value}{chars[i]}")
-            else:
-                new_row.append(value)
-        result.append(new_row)
-    return result
+from .utils import to_content, gen_arr, gen_ops, add_chars
 
 
 class FormL1(object):
@@ -157,7 +134,7 @@ class FormL7(object):
         b = gen_arr(m=num, n=1, lb=0, ub=self.ub,
                     dtype='int')
         arr = np.hstack((a, b))
-        arr = _add_chars(arr, chars=['x'])
+        arr = add_chars(arr, chars=['x'])
         ops1, ops2 = [['+']] * num, ['-'] * num
         res1, res2 = to_content(arr, ops1, cc={(0, 2)}), to_content(arr, ops2, cc={(0, 2)})
         res = []
@@ -179,7 +156,7 @@ class FormL8(object):
         arr = gen_arr(m=num, n=2, lb=11, ub=self.ub, dtype='int')
         arr = np.array(arr)
         arr = arr * arr
-        arr = _add_chars(arr, chars=['x^2'])
+        arr = add_chars(arr, chars=['x^2'])
         ops = [['-','=']] * num
         return to_content(arr, ops)
 
@@ -199,7 +176,7 @@ class FormL9(object):
         b = gen_arr(m=num, n=1, lb=0, ub=self.ub,
                     dtype='int')
         arr = np.hstack((a, b))
-        arr = _add_chars(arr, chars=['x'])
+        arr = add_chars(arr, chars=['x'])
         ops = gen_ops(m=num, n=1, chars={'+', '-'})
         temp = to_content(arr, ops, cc={(0,2)})
         res = [item + '^2 =' for item in temp]
@@ -226,7 +203,7 @@ class FormL10(object):
         a2 = a * a
         b2 = b * b
         arr = np.hstack((a2, ab, b2))
-        arr = _add_chars(arr, chars=['x^2', 'x'])
+        arr = add_chars(arr, chars=['x^2', 'x'])
 
         ops1 = gen_ops(m=num, n=1, chars=['+', '-'])
         ops2 = [['+', '=']] * num
@@ -247,7 +224,7 @@ class FormL11(object):
     def generate(self, num):
         arr = gen_arr(m=num, n=3, lb=-self.ub, ub=self.ub,
                 dtype='int')
-        arr = _add_chars(arr, ['x^2'])
+        arr = add_chars(arr, ['x^2'])
         ops = [['+', '=']] * num
         return to_content(arr, ops, skip={0, 2})
 
@@ -266,7 +243,7 @@ class FormL12(object):
         # ax^2+bx=
         arr = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
                 dtype='int')
-        arr = _add_chars(arr, ['x^2', 'x'])
+        arr = add_chars(arr, ['x^2', 'x'])
         ops = gen_ops(m=num, n=1, chars=['+', '-'], has_eq=True)
         return to_content(arr, ops)
 
@@ -276,7 +253,7 @@ class FormL12(object):
         b = gen_arr(m=num, n=1, lb=1, ub=self.ub, dtype='int')
         c = gen_arr(m=num, n=1, lb=1, ub=self.ub, dtype='int')
         arr = np.hstack((a,b,c,b))
-        arr = _add_chars(arr, ['(x', ')^2', '(x', ')'])
+        arr = add_chars(arr, ['(x', ')^2', '(x', ')'])
         ops = gen_ops(m=num, n=2, chars=['+', '-'], distinct=False)
         ops = np.array(ops)
         ops = np.hstack((ops, ops[:, 0].reshape(-1,1), [['=']]*num))
@@ -301,7 +278,7 @@ class FormL13(object):
     def generate(self, num):
         ab = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
                 dtype='int')
-        ab = _add_chars(ab, ['x'])
+        ab = add_chars(ab, ['x'])
         ops = [['+']] * num
         ab = to_content(ab, ops, cc={(0, 2)})
         ab = [item + '^2' for item in ab]
@@ -338,7 +315,7 @@ class FormL14(object):
         d = b + c
         e = b * c
 
-        dxe = _add_chars(np.array([d, e, [0] * num]).T, 'x')
+        dxe = add_chars(np.array([d, e, [0] * num]).T, 'x')
         arr = np.hstack(([['x^2']] * num, dxe))
 
         ops1 = gen_ops(m=num, n=1, chars={'+', '-'})
@@ -363,7 +340,7 @@ class FormL14(object):
                 ops1.append(['+'])
 
         e = b * c
-        dxe = _add_chars(np.array([d, e, [0] * num]).T, 'x')
+        dxe = add_chars(np.array([d, e, [0] * num]).T, 'x')
         arr = np.hstack(([['x^2']] * num, dxe))
 
         ops2 = [['-', '=']] * num
@@ -393,7 +370,7 @@ class FormL15X(object):
         d = b - c
         e = b * c
 
-        dxe = _add_chars(np.array([d, e, [0] * num]).T, 'x')
+        dxe = add_chars(np.array([d, e, [0] * num]).T, 'x')
         arr = np.hstack(([['x^2']]*num, dxe))
         ops = [['+', '-', '=']]*num
 
@@ -416,7 +393,7 @@ class FormL15(object):
         bc = np.array(gen_arr(m=num, n=2, lb=0, ub=self.ub,
                      dtype='int'))
         arr = np.hstack((a, bc, [[0]]*num))
-        arr = _add_chars(arr, ['x^2', 'x'])
+        arr = add_chars(arr, ['x^2', 'x'])
         ops = gen_ops(m=num, n=2, chars={'+', '-'}, distinct=False, has_eq=True)
 
         return to_content(arr, ops)

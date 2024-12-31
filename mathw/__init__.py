@@ -67,6 +67,12 @@ class MathWork(object):
                     'levels': {11},
                     'pageCapacity': 12
                 },
+            ],
+            'Func': [
+                {
+                    'levels': {1},
+                    'pageCapacity': 16
+                }
             ]
         }
         if self._se not in config.keys():
@@ -103,5 +109,8 @@ class MathWork(object):
     def _refine_content(self, content):
         if self._se == 'Form':
             if self._lv in {4, 5, 6}:
+                return self._separate_equations(content)
+        if self._se == 'Func':
+            if self._lv in {1}:
                 return self._separate_equations(content)
         return content

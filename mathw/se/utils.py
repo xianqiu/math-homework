@@ -256,3 +256,26 @@ def calculate_formula_result(formula):
     return res
 
 
+def add_chars(arr, chars):
+    """
+    给二维数组 arr 中每一行逐个添加 chars 中的字符。
+    例如：arr[i]是arr的第i行，假设 arr[i] = [3, 5, 2]，那么
+    1、当 vars = ['x', 'y', 'z'] 时，返回 ['3x', '5y', '2z']
+    2、当 vars = ['x', 'y'] 时，返回 ['3x', '5y', 2]
+    3、当 vars = ['x', '', 'z'] 时，返回 ['3x', 5, '2z']
+    :param arr: list, 二维数组
+    :param chars: list, 字符串列表
+    :return: list
+    """
+    result = []
+    for row in arr:
+        new_row = []
+        for i, value in enumerate(row):
+            if i < len(chars) and chars[i] != '':
+                new_row.append(f"{value}{chars[i]}")
+            else:
+                new_row.append(value)
+        result.append(new_row)
+    return result
+
+
