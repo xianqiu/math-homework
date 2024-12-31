@@ -234,36 +234,7 @@ class FormL10(object):
         return to_content(arr, ops)
 
 
-class FormL9X(object):
-    """
-    二次展开, abcd是整数
-    (ax+b)(cx+d)=
-    """
-
-    def __init__(self):
-        self.ub = 20
-
-    def generate(self, num):
-        arr1 = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
-                dtype='int')
-        arr1 = _add_chars(arr1, 'x')
-        ops1 = [['+']] * num
-        res1 = to_content(arr1, ops1, cc={(0, 2)})
-
-        arr2 = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
-                       dtype='int')
-        arr2 = _add_chars(arr2, 'x')
-        ops2 = [['+']] * num
-        res2 = to_content(arr2, ops2, cc={(0, 2)})
-
-        res = []
-        for p in zip(res1, res2):
-            res.append(''.join(p) + ' =')
-
-        return res
-
-
-class FormL10X(object):
+class FormL11(object):
     """
     二次方程, abc是整数
     ax^2+b=c
@@ -281,7 +252,45 @@ class FormL10X(object):
         return to_content(arr, ops, skip={0, 2})
 
 
-class FormL11(object):
+class FormL12(object):
+    """
+    因式分解
+    ax^2+bx=
+    a(x+b)^2+c(x+b)=
+    """
+
+    def __init__(self):
+        self.ub = 20
+
+    def _gen1(self, num):
+        # ax^2+bx=
+        arr = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
+                dtype='int')
+        arr = _add_chars(arr, ['x^2', 'x'])
+        ops = gen_ops(m=num, n=1, chars=['+', '-'], has_eq=True)
+        return to_content(arr, ops)
+
+    def _gen2(self, num):
+        # a(x+b)^2+c(x+b)=
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        b = gen_arr(m=num, n=1, lb=1, ub=self.ub, dtype='int')
+        c = gen_arr(m=num, n=1, lb=1, ub=self.ub, dtype='int')
+        arr = np.hstack((a,b,c,b))
+        arr = _add_chars(arr, ['(x', ')^2', '(x', ')'])
+        ops = gen_ops(m=num, n=2, chars=['+', '-'], distinct=False)
+        ops = np.array(ops)
+        ops = np.hstack((ops, ops[:, 0].reshape(-1,1), [['=']]*num))
+        return to_content(arr, ops)
+
+    def generate(self, num):
+        res1 = self._gen1(num)
+        res2 = self._gen2(num)
+        res = res1 + res2
+        np.random.shuffle(res)
+        return res[0: num]
+
+
+class FormL13(object):
     """
     二次方程, abcde是整数
     e(ax+b)^2+c=d
@@ -313,7 +322,7 @@ class FormL11(object):
         return res
 
 
-class FormL12(object):
+class FormL14(object):
     """
     二次方程, bc是正整数
     x^2@(b+c)x+bc=0, @ in {+,-}
@@ -337,7 +346,7 @@ class FormL12(object):
         return to_content(arr, ops)
 
 
-class FormL13(object):
+class FormL15(object):
     """
     二次方程, bc是正整数
     x^2+(b-c)x-bc=0
@@ -360,7 +369,7 @@ class FormL13(object):
         return to_content(arr, ops)
 
 
-class FormL14(object):
+class FormL16(object):
     """
     二次方程, bc是正整数
     ax^2+bx+c=0
