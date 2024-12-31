@@ -1,6 +1,7 @@
 import numpy as np
 
-from .utils import to_content, gen_arr, gen_ops, add_chars
+from .utils import to_content, gen_arr, gen_ops, add_chars, add_sep
+
 
 class FuncL1(object):
     """
@@ -8,6 +9,7 @@ class FuncL1(object):
     f(x) = ax + b
     f(n) =
     """
+    pageCapacity = 14
 
     def __init__(self):
         self.ub = 30
@@ -39,4 +41,7 @@ class FuncL1(object):
             ops.append(p[0])
             ops.append(p[1])
 
-        return to_content(arr, ops)
+        content = to_content(arr, ops)
+        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
+
+        return content

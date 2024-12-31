@@ -17,13 +17,24 @@ class MathWork(object):
     def __init__(self, series, level, **kwargs):
         self._se = series.capitalize()
         self._lv = level
-        # 调整页面的行数
-        self._refine_page_capacity()
-        # 要放在 setattr 之前
+        # load math series class
+        self._Math = globals()[f"{self._se}L{self._lv}"]
+        # update self._config['pageCapacity'] value
+        # if a math series class has defined pageCapacity
+        self._init_page_capacity()
+
         for k, v in self._config.items():
+            # 要放在 setattr 之前
             if k in kwargs:
                 self._config[k] = kwargs[k]
             setattr(self, k, self._config[k])
+
+    def _init_page_capacity(self):
+        # update self._config['pageCapacity'] value
+        # if a math series class has defined pageCapacity
+        page_capacity = getattr(self._Math, "pageCapacity", None)
+        if page_capacity is not None:
+            self._config['pageCapacity'] = page_capacity
 
     def _gen_header_info(self):
         info = ''
@@ -44,73 +55,7 @@ class MathWork(object):
 
     def go(self):
         self._config['headerInfo'] = self._gen_header_info()
-        mathLL = globals()['{}L{}'.format(self._se, self._lv)]
-        content = mathLL().generate(self.pageNum * self.pageCapacity)
-        content = self._refine_content(content)
-        Formatter(content, **self._config).save()
+        content = self._Math().generate(self.pageNum * self.pageCapacity)
+        fmt = Formatter(content, **self._config)
+        fmt.save()
         self._print_congrats()
-
-    def _refine_page_capacity(self):
-        config = {
-            'Frac': [
-                {
-                    'levels': {8, 9, 17, 18},
-                    'pageCapacity': 12
-                },
-            ],
-            'Form': [
-                {
-                    'levels': {4, 5, 6},
-                    'pageCapacity': 13
-                },
-                {
-                    'levels': {11},
-                    'pageCapacity': 12
-                },
-            ],
-            'Func': [
-                {
-                    'levels': {1},
-                    'pageCapacity': 16
-                }
-            ]
-        }
-        if self._se not in config.keys():
-            return
-        for item in config[self._se]:
-            if self._lv in item['levels']:
-                self._config['pageCapacity'] = item['pageCapacity']
-                break
-
-    def _separate_equations(self, content):
-        """ 给方程组添加分隔符。
-        """
-        k = 2 # 方程组的方程数量
-        sep_length = 40 # 分隔符的长度
-        sep = '-' * sep_length
-        # 计算一页的方程个数(eq_num)
-        # 一页的行数(pageCapacity) = 分隔符行数(eq_num / k + 1) + 方程个数(eq_num)
-        eq_num = (self.pageCapacity - 1) * k / (k+1)
-        res = []
-        for i in range(len(content)):
-            j = i % eq_num
-            # 每页开头添加一行分隔符
-            if j == 0:
-                res.append(sep)
-            # 每k个方程添加一行分隔符
-            if j % k == k-1:
-                res.append(content[i])
-                res.append(sep)
-            else:
-                res.append(content[i])
-
-        return res[0: self.pageCapacity * self.pageNum]
-
-    def _refine_content(self, content):
-        if self._se == 'Form':
-            if self._lv in {4, 5, 6}:
-                return self._separate_equations(content)
-        if self._se == 'Func':
-            if self._lv in {1}:
-                return self._separate_equations(content)
-        return content

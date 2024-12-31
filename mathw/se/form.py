@@ -1,6 +1,6 @@
 import numpy as np
 
-from .utils import to_content, gen_arr, gen_ops, add_chars
+from .utils import to_content, gen_arr, gen_ops, add_chars, add_sep
 
 
 class FormL1(object):
@@ -59,6 +59,8 @@ class FormL4(object):
     dx + ey = f
     """
 
+    pageCapacity = 14
+
     def __init__(self):
         self.ub = 10
 
@@ -80,7 +82,9 @@ class FormL4(object):
 
         ops = [['x +', 'y =']] * num
 
-        return to_content(arr, ops, skip={0, 2})
+        content = to_content(arr, ops, skip={0, 2})
+        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
+        return content
 
 
 class FormL5(object):
@@ -90,6 +94,8 @@ class FormL5(object):
     dx + ey = f
     """
 
+    pageCapacity = 14
+
     def __init__(self):
         self.ub = 15
 
@@ -98,7 +104,9 @@ class FormL5(object):
                       dtype='int')
         ops = [['x +', 'y =']] * num
 
-        return to_content(arr, ops, skip={0, 2})
+        content = to_content(arr, ops, skip={0, 2})
+        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
+        return content
 
 
 class FormL6(object):
@@ -108,6 +116,8 @@ class FormL6(object):
     dx + ey = f
     """
 
+    pageCapacity = 14
+
     def __init__(self):
         self.ub = 15
 
@@ -116,7 +126,9 @@ class FormL6(object):
                       dtype='float', dec=1)
         ops = [['x +', 'y =']] * num
 
-        return to_content(arr, ops, skip={0, 2})
+        content = to_content(arr, ops, skip={0, 2})
+        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
+        return content
 
 
 class FormL7(object):

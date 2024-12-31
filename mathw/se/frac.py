@@ -116,6 +116,8 @@ class FracL8(object):
     四则运算 a@b@c@d=, @ in {+,-,×,÷}
     """
 
+    pageCapacity = 12
+
     def __init__(self):
         self.ub = 10
 
@@ -131,6 +133,9 @@ class FracL9(object):
     """
     四则填空 a@__@b@c=d, @ in {+,-,×,÷}, 占位符位置随机
     """
+
+    pageCapacity = 12
+
     def __init__(self):
         self.ub = 10
 
@@ -264,6 +269,9 @@ class FracL17(object):
     """
     四则运算 a@b@c@d=, @ in {+,-,×,÷}
     """
+
+    pageCapacity = 12
+
     def __init__(self):
         self.ub = 10
 
@@ -286,6 +294,9 @@ class FracL18(object):
     """
     四则填空 a@?@b@c=d, @ in {+,-,×,÷}, abcd是小数，占位符位置随机
     """
+
+    pageCapacity = 12
+
     def __init__(self):
         self.ub = 10
 
