@@ -1,6 +1,6 @@
 import numpy as np
 
-from .utils import to_content, gen_arr, gen_ops, add_chars, add_sep
+from .utils import to_content, gen_arr, add_chars, add_sep, group_contents
 
 
 class FuncL1(object):
@@ -20,6 +20,7 @@ class FuncL1(object):
         arr1 = np.hstack(([["f(x)"]] * num, ab))
         arr1 = add_chars(arr1, ["", "x"])
         ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         n1 = gen_arr(m=num//3+1, n=1, lb=-self.ub, ub=self.ub, dtype='int')
         n2 = gen_arr(m=num//3+1, n=1, lb=-self.ub, ub=self.ub, dtype='float', dec=1)
@@ -30,21 +31,9 @@ class FuncL1(object):
         n = n[0: num]
         arr2 = [[f"f({val[0]})"] for val in n]
         ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2)
 
-        arr = []
-        for p in zip(arr1, arr2):
-            arr.append(p[0])
-            arr.append(p[1])
-
-        ops = []
-        for p in zip(ops1, ops2):
-            ops.append(p[0])
-            ops.append(p[1])
-
-        content = to_content(arr, ops)
-        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
-
-        return content
+        return group_contents([content1, content2], self.pageCapacity)
 
 
 class FuncL2(object):
@@ -65,25 +54,14 @@ class FuncL2(object):
         arr1 = np.hstack(([["f(x)"]] * num, ab))
         arr1 = add_chars(arr1, ["", "x"])
         ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         cde = gen_arr(m=num, n=3, lb=-self.ub, ub=self.ub, dtype='int')
         arr2 = add_chars(cde, ["f(x)", "x"])
         ops2 = [["+", "="]] * num
+        content2 = to_content(arr2, ops2)
 
-        arr = []
-        for p in zip(arr1, arr2):
-            arr.append(p[0])
-            arr.append(p[1])
-
-        ops = []
-        for p in zip(ops1, ops2):
-            ops.append(p[0])
-            ops.append(p[1])
-
-        content = to_content(arr, ops)
-        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
-
-        return content
+        return group_contents([content1, content2], self.pageCapacity)
 
 
 class FuncL3(object):
@@ -104,33 +82,21 @@ class FuncL3(object):
         arr1 = np.hstack(([["f(x)"]] * num, arr1))
         arr1 = add_chars(arr1, ["", "x"])
         ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         arr2 = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub, dtype='int')
         arr2 = np.hstack(([["g(x)"]] * num, arr2))
         arr2 = add_chars(arr2, ["", "/x"])
         ops2 = [["=", "+"]] * num
+        content2 = to_content(arr2, ops2,skip={1})
 
         d = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
         arr3 = np.hstack((d, [["xg(x)"]] * num, [["0"]]*num))
         arr3 = add_chars(arr3, ["f(x)"])
         ops3 = [["+", "="]] * num
+        content3 = to_content(arr3, ops3)
 
-        arr = []
-        for p in zip(arr1, arr2, arr3):
-            arr.append(p[0])
-            arr.append(p[1])
-            arr.append(p[2])
-
-        ops = []
-        for p in zip(ops1, ops2, ops3):
-            ops.append(p[0])
-            ops.append(p[1])
-            ops.append(p[2])
-
-        content = to_content(arr, ops)
-        content = add_sep(content, gap=3, page_capacity=self.pageCapacity)
-
-        return content
+        return group_contents([content1, content2, content3], self.pageCapacity)
 
 
 class FuncL4(object):
@@ -152,31 +118,20 @@ class FuncL4(object):
         arr1 = np.hstack(([["f(x)"]] * num, arr1))
         arr1 = add_chars(arr1, ["", "x^2"])
         ops1 = [["="]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         arr2 = gen_arr(m=num, n=1, lb=0, ub=self.ub, dtype='int')
         arr2 = np.hstack(([["g(x)", "x"]] * num, arr2))
         ops2 = [["=", "/"]] * num
+        content2 = to_content(arr2, ops2,skip={1})
 
         cd = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub, dtype='int')
         arr3 = np.hstack(([["f(x) / g(x)"]] * num, cd))
         arr3 = add_chars(arr3, ["", "x"])
         ops3 = [["=", "+"]] * num
+        content3 = to_content(arr3, ops3, skip={1})
 
-        arr = []
-        for p in zip(arr1, arr2, arr3):
-            arr.append(p[0])
-            arr.append(p[1])
-            arr.append(p[2])
-
-        ops = []
-        for p in zip(ops1, ops2, ops3):
-            ops.append(p[0])
-            ops.append(p[1])
-            ops.append(p[2])
-
-        content = to_content(arr, ops,skip={1})
-        content = add_sep(content, gap=3, page_capacity=self.pageCapacity)
-        return content
+        return group_contents([content1, content2, content3], self.pageCapacity)
 
 
 class FuncL5(object):
@@ -191,34 +146,24 @@ class FuncL5(object):
         self.ub = 30
 
     def generate(self, num):
-        abc = np.array(gen_arr(m=num, n=3, lb=1, ub=self.ub, dtype='int'))
-        a, b, c = abc[:, 0].reshape(-1, 1), abc[:, 1].reshape(-1, 1), abc[:, 2].reshape(-1, 1)
+        ab = np.array(gen_arr(m=num, n=2, lb=1, ub=self.ub, dtype='int'))
+        a, b = ab[:, 0].reshape(-1, 1), ab[:, 1].reshape(-1, 1)
         arr1 = np.hstack(([["f(x)"]] * num, a, b))
         arr1 = add_chars(arr1, ["", "x"])
         ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         arr2 = np.hstack(([["g(x)"]] * num, a, b))
         arr2 = add_chars(arr2, ["", "x"])
         ops2 = [["=", "-"]] * num
+        content2 = to_content(arr2, ops2, skip={1})
 
+        c = gen_arr(m=num, n=1, lb=0, ub=self.ub, dtype='int')
         arr3 = np.hstack(([["f(x)g(x)"]] * num, c))
         ops3 = [["="]] * num
+        content3 = to_content(arr3, ops3, skip={1})
 
-        arr = []
-        for p in zip(arr1, arr2, arr3):
-            arr.append(p[0])
-            arr.append(p[1])
-            arr.append(p[2])
-
-        ops = []
-        for p in zip(ops1, ops2, ops3):
-            ops.append(p[0])
-            ops.append(p[1])
-            ops.append(p[2])
-
-        content = to_content(arr, ops)
-        content = add_sep(content, gap=3, page_capacity=self.pageCapacity)
-        return content
+        return group_contents([content1, content2, content3], self.pageCapacity)
 
 
 class FuncL6(object):
@@ -237,30 +182,19 @@ class FuncL6(object):
         arr1 = np.hstack(([["f(x,y)"]] * num, arr1))
         arr1 = add_chars(arr1, ["", "x", "y"])
         ops1 = [["=", "+", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         arr2 = gen_arr(m=num, n=3, lb=-self.ub, ub=self.ub, dtype='int')
         arr2 = np.hstack(([["g(x,y)"]] * num, arr2))
         arr2 = add_chars(arr2, ["", "x", "y"])
         ops2 = [["=", "+", "+"]] * num
+        content2 = to_content(arr2, ops2, skip={1})
 
         arr3 = [["f(x,y)", "g(x,y)", "0"]] * num
         ops3 = [["=", "="]] * num
+        content3 = to_content(arr3, ops3)
 
-        arr = []
-        for p in zip(arr1, arr2, arr3):
-            arr.append(p[0])
-            arr.append(p[1])
-            arr.append(p[2])
-
-        ops = []
-        for p in zip(ops1, ops2, ops3):
-            ops.append(p[0])
-            ops.append(p[1])
-            ops.append(p[2])
-
-        content = to_content(arr, ops, skip={1})
-        content = add_sep(content, gap=3, page_capacity=self.pageCapacity)
-        return content
+        return group_contents([content1, content2, content3], self.pageCapacity)
 
 
 class FuncL7(object):
@@ -279,22 +213,74 @@ class FuncL7(object):
         arr1 = np.hstack(([["f(x)"]] * num, arr1))
         arr1 = add_chars(arr1, ["", "x"])
         ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
 
         arr2 = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
         arr2 = np.hstack(([["f(f(x))"]] * num, arr2))
         ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2, skip={1})
 
-        arr = []
-        for p in zip(arr1, arr2):
-            arr.append(p[0])
-            arr.append(p[1])
+        return group_contents([content1, content2], self.pageCapacity)
 
-        ops = []
-        for p in zip(ops1, ops2):
-            ops.append(p[0])
-            ops.append(p[1])
 
-        content = to_content(arr, ops, skip={1})
-        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
-        return content
+class FuncL8(object):
+
+    """ 解方程: a是分数, b是整数
+    f(x) = ax+b
+    f(f(x)) = f(x)
+    """
+
+    pageCapacity = 14
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='frac')
+        b = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        arr1 = np.hstack(([["f(x)"]] * num, a, b))
+        arr1 = add_chars(arr1, ["", "x"])
+        ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
+
+        arr2 = [["f(f(x))", "f(x)"]] * num
+        ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2)
+
+        return group_contents([content1, content2], self.pageCapacity)
+
+
+class FuncL9(object):
+
+    """ 解方程: a,b是整数，c是小数
+    f(x, y) = ax^2 + by
+    g(x) = x/a
+    f(g(x), g(x)) = c
+    """
+    pageCapacity = 15
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        b = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        c = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='float', dec=1)
+
+        arr1 = np.hstack(([["f(x, y)"]] * num, a, b))
+        arr1 = add_chars(arr1, ["", "x^2", "y"])
+        ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
+
+        arr2 = np.hstack(([["g(x)"]] * num, [["x"]]*num, a))
+        ops2 = [["=", "/"]] * num
+        content12 = to_content(arr2, ops2)
+
+        arr3 = np.hstack(([["f(g(x), g(x))"]] * num, c))
+        ops3 = [["="]] * num
+        content3 = to_content(arr3, ops3, skip={1})
+
+        return group_contents([content1, content12, content3], self.pageCapacity)
 
