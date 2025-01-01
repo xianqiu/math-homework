@@ -1,5 +1,6 @@
 import datetime
 from pathlib import Path
+import importlib.util
 
 from .formatter import Formatter
 from .se import *
@@ -68,7 +69,13 @@ class MathWork(object):
         return  [name.stem for name in se_module_dir.iterdir()
                       if '__' not in name.stem and name.stem not in exclude]
 
-    def get_series_levels(self, name):
-        pass
+    @staticmethod
+    def get_series_levels(name):
+        module_name = f"mathw.se.{name}"
+        module = importlib.import_module(module_name)
+        k = len(name) + 1
+        levels = [int(item[k:]) for item in module.__dict__.keys()
+                  if item.startswith(name.capitalize())]
+        return levels
 
 

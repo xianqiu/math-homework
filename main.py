@@ -3,7 +3,8 @@ from mathw import MathWork
 
 if __name__ == '__main__':
 
-    MathWork.get_series()
+    levels = MathWork.get_series_levels("frac")
+    print(levels)
     exit(0)
 
     MathWork(

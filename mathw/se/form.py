@@ -366,29 +366,6 @@ class FormL14(object):
         return res[0:num]
 
 
-class FormL15X(object):
-    """
-    二次方程, bc是正整数
-    x^2+(b-c)x-bc=0
-    """
-
-    def __init__(self):
-        self.ub = 20
-
-    def generate(self, num):
-        bc = np.array(gen_arr(m=num, n=2, lb=0, ub=self.ub,
-                     dtype='int'))
-        b, c = bc[:, 0], bc[:, 1]
-        d = b - c
-        e = b * c
-
-        dxe = add_chars(np.array([d, e, [0] * num]).T, 'x')
-        arr = np.hstack(([['x^2']]*num, dxe))
-        ops = [['+', '-', '=']]*num
-
-        return to_content(arr, ops)
-
-
 class FormL15(object):
     """
     二次方程, bc是正整数
