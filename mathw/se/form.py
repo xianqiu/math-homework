@@ -83,9 +83,7 @@ class FormL4(object):
 
         ops = [['x +', 'y =']] * num
 
-        content = to_content(arr, ops, skip={0, 2})
-        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
-        return content
+        return to_content(arr, ops, skip={0, 2})
 
 
 class FormL5(object):
@@ -105,9 +103,7 @@ class FormL5(object):
                       dtype='int')
         ops = [['x +', 'y =']] * num
 
-        content = to_content(arr, ops, skip={0, 2})
-        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
-        return content
+        return to_content(arr, ops, skip={0, 2})
 
 
 class FormL6(object):
@@ -127,9 +123,7 @@ class FormL6(object):
                       dtype='float', dec=1)
         ops = [['x +', 'y =']] * num
 
-        content = to_content(arr, ops, skip={0, 2})
-        content = add_sep(content, gap=2, page_capacity=self.pageCapacity)
-        return content
+        return to_content(arr, ops, skip={0, 2})
 
 
 class FormL7(object):

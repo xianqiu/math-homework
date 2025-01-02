@@ -3,10 +3,10 @@ from pathlib import Path
 import importlib.util
 
 import numpy as np
-from Cython.Compiler.Buffer import used_buffer_aux_vars
 
 from .formatter import Formatter
 from .se import *
+from .se.utils import add_sep
 
 
 __all__ = ['MathWork', 'MathWorkMix']
@@ -62,6 +62,9 @@ class MathWork(object):
     def go(self):
         self._config['headerInfo'] = self._gen_header_info()
         content = self._Math().generate(self.pageNum * self.pageCapacity)
+        group_size = getattr(self._Math, "groupSize", 1)
+        if group_size > 1:
+            content = add_sep(content, group_size, self.pageCapacity)
         fmt = Formatter(content, **self._config)
         fmt.save()
         self._print_info()

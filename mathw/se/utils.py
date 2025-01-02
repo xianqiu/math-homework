@@ -317,7 +317,7 @@ def add_sep(content, gap, page_capacity,
         return new_content
 
 
-def group_contents(content_list, page_capacity=None):
+def group_contents(content_list):
     """
     把contents列表中的元素按“组”重新排列。排列方式如下（例子说明）
     contents = [content1, content2, content3 ...],
@@ -329,14 +329,11 @@ def group_contents(content_list, page_capacity=None):
     result = [item11, item21, item31, item12, item22, item32, ...]
 
     :param content_list: 二维列表, 例如[[str1], [str2], [str3], ...]
-    :param page_capacity: 按 page_capacity 自动添加 separators (调用 add_sep 函数)
     :return: 一维列表
     """
     result = []
     for items in zip(*content_list):
         # Extend list by appending elements from the iterable.
         result.extend(items)
-    if page_capacity is not None:
-        result = add_sep(result, gap=len(content_list), page_capacity=page_capacity)
     return result
 
