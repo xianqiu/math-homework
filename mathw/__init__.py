@@ -1,1 +1,1 @@
-from .mathwork import MathWork
+from .mathwork import *

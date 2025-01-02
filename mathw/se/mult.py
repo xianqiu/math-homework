@@ -127,30 +127,21 @@ class MultL7(object):
     def __init__(self):
         self.ub = 9
 
-    def _gen1(self, num):
-        # c÷__=b
-        ab = np.array(gen_arr(m=num, n=2, lb=0, ub=self.ub,
-                     dtype='int'))
-        a, b = ab[:, 0], ab[:, 1]
-        c = a * b
-        arr = np.array([c, b]).T
-        ops = [['÷ __ =']] * num
-        return to_content(arr, ops)
-
-    def _gen2(self, num):
-        # __÷a=b
-        arr = gen_arr(m=num, n=2, lb=0, ub=self.ub,
-                     dtype='int')
-        arr = insert_placeholder(arr, col=0)
-        ops = [['÷', '=']] * num
-        return to_content(arr, ops)
-
     def generate(self, num):
-        half = num // 2
-        res = self._gen1(num=half) + self._gen2(num=num-half)
-        np.random.shuffle(res)
+        b = np.array(gen_arr(m=num, n=1, lb=0, ub=self.ub, dtype='int'))
+        c = np.array(gen_arr(m=num, n=1, lb=0, ub=self.ub, dtype='int'))
+        a = b * c
+        arr1 = np.hstack((a, [["__"]] * num, c))
+        ops1 = [['÷', "="]] * num
+        content1 = to_content(arr1, ops1, skip={0, 2})
 
-        return res
+        arr2 = np.hstack(([["__"]] * num, b, c))
+        ops2 = [['÷', "="]] * num
+        content2 = to_content(arr2, ops2, skip={0, 2})
+
+        content = content1 + content2
+        np.random.shuffle(content)
+        return content[0: num]
 
 
 class MultL8(object):
@@ -161,30 +152,21 @@ class MultL8(object):
     def __init__(self):
         self.ub = 9
 
-    def _gen1(self, num):
-        # c÷__=b
-        ab = np.array(gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
-                     dtype='int'))
-        a, b = ab[:, 0], ab[:, 1]
-        c = a * b
-        arr = np.array([c, b]).T
-        ops = [['÷ __ =']] * num
-        return to_content(arr, ops, skip={0, 1})
-
-    def _gen2(self, num):
-        # __÷a=b
-        arr = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
-                     dtype='int')
-        arr = insert_placeholder(arr, col=0)
-        ops = [['÷', '=']] * num
-        return to_content(arr, ops, skip={0, 2})
-
     def generate(self, num):
-        half = num // 2
-        res = self._gen1(num=half) + self._gen2(num=num - half)
-        np.random.shuffle(res)
+        b = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        c = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        a = b * c
+        arr1 = np.hstack((a, [["__"]]*num, c))
+        ops1 = [['÷', "="]] * num
+        content1 = to_content(arr1, ops1, skip={0, 2})
 
-        return res
+        arr2 = np.hstack(([["__"]]*num, b, c))
+        ops2 = [['÷', "="]] * num
+        content2 = to_content(arr2, ops2, skip={0, 2})
+
+        content = content1 + content2
+        np.random.shuffle(content)
+        return content[0: num]
 
 
 class MultL9(object):
@@ -214,29 +196,31 @@ class MultL10(object):
 
     def _gen1(self, num):
         # a×__+c×d=e
-        arr = np.array(gen_arr(m=num, n=4, lb=-self.ub, ub=self.ub,
-                      dtype='int'))
-        a, b, c, d = arr[:, 0], arr[:, 1], arr[:, 2], arr[:, 3]
+        a = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        b = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        c = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        d = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
         e = a * b + c * d
-        arr = np.array([a, c, d, e]).T
-        ops = [['× __ + ', '×', '=']] * num
-        return to_content(arr, ops, skip={0, 3})
+        arr = np.hstack((a, [["__"]]*num, c, d, e))
+        ops = [['×', '+', '×', '=']] * num
+        return to_content(arr, ops, skip={0, 4})
 
     def _gen2(self, num):
         # a×b - __×d = e
-        arr = np.array(gen_arr(m=num, n=4, lb=-self.ub, ub=self.ub,
-                      dtype='int'))
-        a, b, c, d = arr[:, 0], arr[:, 1], arr[:, 2], arr[:, 3]
+        a = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        b = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        c = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        d = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
         e = a * b - c * d
-        arr = np.array([a, b, d, e]).T
-        ops = [['×', '- __ ×', '=']] * num
-        return to_content(arr, ops, skip={0, 3})
+        arr = np.hstack((a, b, [["__"]]*num, d, e))
+        ops = [['×', '-', '×', '=']] * num
+        return to_content(arr, ops, skip={0, 4})
 
     def generate(self, num):
-        half = num // 2
-        res = self._gen1(half) + self._gen2(num-half)
+        half = num // 2 + 1
+        res = self._gen1(half) + self._gen2(half)
         np.random.shuffle(res)
-        return res
+        return res[0: num]
 
 
 class MultL11(object):
@@ -285,6 +269,7 @@ class MultL12(object):
         e = a * b + f
         arr = np.array([a, c, d, e]).T
         ops = [['× __ +', '÷', '=']] * num
+
         return to_content(arr, ops, skip={0, 3})
 
     def _gen2(self, num):
@@ -309,12 +294,10 @@ class MultL12(object):
         return to_content(arr, ops, skip={0, 3})
 
     def generate(self, num):
-        m1 = num // 3
-        m2 = num // 3
-        m3 = num - m1 - m2
-        res = self._gen1(m1) + self._gen2(m2) + self._gen3(m3)
+        k = num // 3 + 1
+        res = self._gen1(k) + self._gen2(k) + self._gen3(k)
         np.random.shuffle(res)
-        return res
+        return res[0: num]
 
 
 class MultL13(object):
@@ -437,10 +420,10 @@ class MultL18(object):
         return to_content(arr, ops, skip={0, 2})
 
     def generate(self, num):
-        half = num // 2
-        res = self._gen1(half) + self._gen2(num - half)
+        half = num // 2 + 1
+        res = self._gen1(half) + self._gen2(half)
         np.random.shuffle(res)
-        return res
+        return res[0: num]
 
 
 class MultL19(object):
@@ -503,30 +486,21 @@ class MultL22(object):
     def __init__(self):
         self.ub = 30
 
-    def _gen1(self, num):
-        # a÷__=c
-        bc = np.array(gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
-                               dtype='int'))
-        b, c = bc[:, 0], bc[:, 1]
-        a = b * c
-        arr = np.array([a, c]).T
-        arr = insert_placeholder(arr.tolist(), 1)
-        ops = [['÷', '=']] * num
-        return to_content(arr, ops, skip={0, 2})
-
-    def _gen2(self, num):
-        # __÷b=c
-        arr = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub,
-                               dtype='int')
-        arr = insert_placeholder(arr, col=0)
-        ops = [['÷', '=']] * num
-        return to_content(arr, ops, skip={2})
-
     def generate(self, num):
-        half = num // 2
-        res = self._gen1(half) + self._gen2(num-half)
-        np.random.shuffle(res)
-        return res
+        b = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        c = np.array(gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int'))
+        a = b * c
+        arr1 = np.hstack((a, [["__"]]*num, c))
+        ops1 = [['÷', "="]] * num
+        content1 = to_content(arr1, ops1, skip={0, 2})
+
+        arr2 = np.hstack(([["__"]]*num, b, c))
+        ops2 = [['÷', "="]] * num
+        content2 = to_content(arr2, ops2, skip={0, 2})
+
+        content = content1 + content2
+        np.random.shuffle(content)
+        return content[0: num]
 
 
 class MultL23(object):
@@ -602,6 +576,9 @@ class MultL25(object):
 
 class MultL26(object):
 
+    """ 四则填空：
+    a@b@?@c=d, @ in {+,-,×,÷}
+    """
     def __init__(self):
         self.ub = 30
 

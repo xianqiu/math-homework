@@ -1,7 +1,6 @@
 import numpy as np
-from win32comext.shell.shellcon import COPYENGINE_E_MANY_SRC_1_DEST
 
-from .utils import to_content, gen_arr, add_chars, add_sep, group_contents
+from .utils import to_content, gen_arr, add_chars, group_contents
 
 
 class FuncL1(object):
@@ -11,6 +10,7 @@ class FuncL1(object):
     f(n) =
     """
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 30
@@ -26,15 +26,16 @@ class FuncL1(object):
         n1 = gen_arr(m=num//3+1, n=1, lb=-self.ub, ub=self.ub, dtype='int')
         n2 = gen_arr(m=num//3+1, n=1, lb=-self.ub, ub=self.ub, dtype='float', dec=1)
         n3 = gen_arr(m=num//3+1, n=1, lb=-self.ub, ub=self.ub, dtype='frac')
-
         n = n1 + n2 + n3
         np.random.shuffle(n)
         n = n[0: num]
+
         arr2 = [[f"f({val[0]})"] for val in n]
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL2(object):
@@ -43,8 +44,8 @@ class FuncL2(object):
     f(x) = ax + b
     cf(x) + dx = e
     """
-
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 30
@@ -62,7 +63,8 @@ class FuncL2(object):
         ops2 = [["+", "="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL3(object):
@@ -72,8 +74,8 @@ class FuncL3(object):
     g(x) = c/x + v
     df(x) + xg(x) = 0
     """
-
     pageCapacity = 15
+    groupSize = 3
 
     def __init__(self):
         self.ub = 30
@@ -97,7 +99,8 @@ class FuncL3(object):
         ops3 = [["+", "="]] * num
         content3 = to_content(arr3, ops3)
 
-        return group_contents([content1, content2, content3], self.pageCapacity)
+        content = group_contents([content1, content2, content3])
+        return content[0: num]
 
 
 class FuncL4(object):
@@ -107,8 +110,8 @@ class FuncL4(object):
     g(x) = x/u
     f(x) / g(x) = cx + d
     """
-
     pageCapacity = 15
+    groupSize = 3
 
     def __init__(self):
         self.ub = 30
@@ -132,7 +135,8 @@ class FuncL4(object):
         ops3 = [["=", "+"]] * num
         content3 = to_content(arr3, ops3, skip={1})
 
-        return group_contents([content1, content2, content3], self.pageCapacity)
+        content = group_contents([content1, content2, content3])
+        return content[0: num]
 
 
 class FuncL5(object):
@@ -142,6 +146,7 @@ class FuncL5(object):
     f(x)g(x) = c
     """
     pageCapacity = 15
+    groupSize = 3
 
     def __init__(self):
         self.ub = 30
@@ -164,7 +169,8 @@ class FuncL5(object):
         ops3 = [["="]] * num
         content3 = to_content(arr3, ops3, skip={1})
 
-        return group_contents([content1, content2, content3], self.pageCapacity)
+        content = group_contents([content1, content2, content3])
+        return content[0: num]
 
 
 class FuncL6(object):
@@ -174,6 +180,7 @@ class FuncL6(object):
     f(x,y)=g(x,y)=0
     """
     pageCapacity = 15
+    groupSize = 3
 
     def __init__(self):
         self.ub = 30
@@ -195,7 +202,8 @@ class FuncL6(object):
         ops3 = [["=", "="]] * num
         content3 = to_content(arr3, ops3)
 
-        return group_contents([content1, content2, content3], self.pageCapacity)
+        content = group_contents([content1, content2, content3])
+        return content[0: num]
 
 
 class FuncL7(object):
@@ -204,6 +212,7 @@ class FuncL7(object):
     f(f(x)) = c
     """
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -221,8 +230,8 @@ class FuncL7(object):
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2, skip={1})
 
-        return group_contents([content1, content2], self.pageCapacity)
-
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 class FuncL8(object):
 
@@ -230,8 +239,8 @@ class FuncL8(object):
     f(x) = ax+b
     f(f(x)) = f(x)
     """
-
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -249,7 +258,8 @@ class FuncL8(object):
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL9(object):
@@ -260,6 +270,7 @@ class FuncL9(object):
     f(g(x), g(x)) = c
     """
     pageCapacity = 15
+    groupSize = 3
 
     def __init__(self):
         self.ub = 20
@@ -277,13 +288,14 @@ class FuncL9(object):
 
         arr2 = np.hstack(([["g(x)"]] * num, [["x"]]*num, a))
         ops2 = [["=", "/"]] * num
-        content12 = to_content(arr2, ops2)
+        content2 = to_content(arr2, ops2)
 
         arr3 = np.hstack(([["f(g(x), g(x))"]] * num, c))
         ops3 = [["="]] * num
         content3 = to_content(arr3, ops3, skip={1})
 
-        return group_contents([content1, content12, content3], self.pageCapacity)
+        content = group_contents([content1, content2, content3])
+        return content[0: num]
 
 
 class FuncL10(object):
@@ -292,8 +304,8 @@ class FuncL10(object):
     f(x)=ax+b
     f^{-1}(x)=
     """
-
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -310,7 +322,8 @@ class FuncL10(object):
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL11(object):
@@ -319,8 +332,8 @@ class FuncL11(object):
     f(x) = x/a + 1/b
     f^{-1}f(x) + f(x) = 0
     """
-
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -336,7 +349,8 @@ class FuncL11(object):
         ops2 = [["+", "="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL12(object):
@@ -345,6 +359,7 @@ class FuncL12(object):
     f^{-1}(x)f(x) =
     """
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -360,7 +375,8 @@ class FuncL12(object):
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL13(object):
@@ -369,6 +385,7 @@ class FuncL13(object):
     f(f^{-1}(x)) =
     """
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -384,7 +401,8 @@ class FuncL13(object):
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 
 
 class FuncL14(object):
@@ -393,6 +411,7 @@ class FuncL14(object):
     f^{-1}(f(x)) = f^{-1}(x)
     """
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 20
@@ -409,5 +428,6 @@ class FuncL14(object):
         ops2 = [["="]] * num
         content2 = to_content(arr2, ops2)
 
-        return group_contents([content1, content2], self.pageCapacity)
+        content = group_contents([content1, content2])
+        return content[0: num]
 

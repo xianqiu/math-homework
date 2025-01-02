@@ -60,6 +60,7 @@ class FormL4(object):
     """
 
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 10
@@ -93,8 +94,8 @@ class FormL5(object):
     ax + by = c
     dx + ey = f
     """
-
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 15
@@ -115,8 +116,8 @@ class FormL6(object):
     ax + by = c
     dx + ey = f
     """
-
     pageCapacity = 14
+    groupSize = 2
 
     def __init__(self):
         self.ub = 15
