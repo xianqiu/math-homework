@@ -1,4 +1,5 @@
 import numpy as np
+from win32comext.shell.shellcon import COPYENGINE_E_MANY_SRC_1_DEST
 
 from .utils import to_content, gen_arr, add_chars, add_sep, group_contents
 
@@ -283,4 +284,130 @@ class FuncL9(object):
         content3 = to_content(arr3, ops3, skip={1})
 
         return group_contents([content1, content12, content3], self.pageCapacity)
+
+
+class FuncL10(object):
+
+    """ 解方程: a是分数，b是小数
+    f(x)=ax+b
+    f^{-1}(x)=
+    """
+
+    pageCapacity = 14
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='frac')
+        b = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='float', dec=1)
+        arr1 = np.hstack(([["f(x)"]] * num, a, b))
+        arr1 = add_chars(arr1, ["", "x"])
+        ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
+
+        arr2 = [["f^{-1}(x)"]] * num
+        ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2)
+
+        return group_contents([content1, content2], self.pageCapacity)
+
+
+class FuncL11(object):
+
+    """ 解方程: ab是整数
+    f(x) = x/a + 1/b
+    f^{-1}f(x) + f(x) = 0
+    """
+
+    pageCapacity = 14
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        b = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        arr1 = np.hstack(([["f(x)", "x"]] * num, a, [[1]]*num, b))
+        ops1 = [["=", "/", "+", "/"]] * num
+        content1 = to_content(arr1, ops1)
+
+        arr2 = [["f^{-1}f(x)", "f(x)", "0"]] * num
+        ops2 = [["+", "="]] * num
+        content2 = to_content(arr2, ops2)
+
+        return group_contents([content1, content2], self.pageCapacity)
+
+
+class FuncL12(object):
+    """ 求表达式, ab是整数
+    f(x) = ax + b
+    f^{-1}(x)f(x) =
+    """
+    pageCapacity = 14
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        arr1 = gen_arr(m=num, n=2, lb=-self.ub, ub=self.ub, dtype='int')
+        arr1 = np.hstack(([["f(x)"]] * num, arr1))
+        arr1 = add_chars(arr1, ["", "x"])
+        ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
+
+        arr2 = [["f^{-1}(x)f(x)"]] * num
+        ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2)
+
+        return group_contents([content1, content2], self.pageCapacity)
+
+
+class FuncL13(object):
+    """ 求表达式，ab是整数
+    f(x) = a/x + b
+    f(f^{-1}(x)) =
+    """
+    pageCapacity = 14
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        b = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='int')
+        arr1 = np.hstack(([["f(x)"]] * num, a, [["x"]]*num, b))
+        ops1 = [["=", "/", "+"]] * num
+        content1 = to_content(arr1, ops1)
+
+        arr2 = [["f(f^{-1}(x))"]] * num
+        ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2)
+
+        return group_contents([content1, content2], self.pageCapacity)
+
+
+class FuncL14(object):
+    """ 解方程，a是分数，b是小数
+    f(x) = ax + b
+    f^{-1}(f(x)) = f^{-1}(x)
+    """
+    pageCapacity = 14
+
+    def __init__(self):
+        self.ub = 20
+
+    def generate(self, num):
+        a = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='frac')
+        b = gen_arr(m=num, n=1, lb=-self.ub, ub=self.ub, dtype='float', dec=1)
+        arr1 = np.hstack(([["f(x)"]] * num, a, b))
+        arr1 = add_chars(arr1, ["", "x"])
+        ops1 = [["=", "+"]] * num
+        content1 = to_content(arr1, ops1, skip={1})
+
+        arr2 = [["f^{-1}(f(x))", "f^{-1}(x)"]] * num
+        ops2 = [["="]] * num
+        content2 = to_content(arr2, ops2)
+
+        return group_contents([content1, content2], self.pageCapacity)
 
